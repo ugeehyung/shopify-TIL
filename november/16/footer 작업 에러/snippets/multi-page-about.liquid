@@ -1,0 +1,108 @@
+<div class="home-about-us {% if block.settings.style_title == 'style_2' %}style_2{% endif %} {% if block.settings.title_sub != blank %} sub_title_padding{% endif %}
+" id="home-about-{{ block.id }}">
+  <div class="container">
+    <div class="row">
+      <div class="col-12 col-lg-10 offset-lg-1">
+      	{% if block.settings.title_about != blank %}
+            <h4 class="title">
+              {% render 'multilang' with block.settings.title_about %}
+            </h4>
+        {% endif %}
+
+        {% if block.settings.title_sub != blank %}
+            <h3 class="sub-title">
+              {% render 'multilang' with block.settings.title_sub %}
+            </h3>
+        {% endif %}
+        
+        {% if block.settings.des != blank %}
+            <div class="des">
+              {{ block.settings.des }}
+            </div>
+        {% endif %}
+
+        {% if block.settings.button_text != blank %}
+            <a class="btn btn-about-us" href="{{ block.settings.button_text_link }}">{{ block.settings.button_text }}</a>
+        {% endif %}
+      </div>
+    </div>
+    <div class="list-item">
+        {% for i in (1..3) %}
+        
+            {% capture enable %}enable_{{ i }}{% endcapture %}
+            {% capture image %}image_{{ i }}{% endcapture %}
+            {% capture content %}content_{{ i }}{% endcapture %}
+            {% capture color_content %}color_content_{{ i }}{% endcapture %}
+
+            {% if block.settings[enable] %}
+            {% if block.settings[image] != blank or block.settings[content] != blank %}
+            <div class="item" id="item-{{i}}">
+                {% if block.settings[image] != blank %}
+                <div class="image">
+                    <img data-srcset="{{ block.settings[image] | img_url: '200x' }}" class="lazyload" alt="{{ block.settings[image].alt | default: shop.name }}" />
+                </div>
+                {% endif %}
+                {% if block.settings[content] != blank %}
+                <div class="content">
+                    {{ block.settings[content] }}
+                </div>
+                {% endif %}
+
+                <style>
+                    #item-{{i}} .content p, #item-{{i}} .content a {
+                        color: {{ block.settings[color_content] }};
+                    }
+                </style>
+            </div>
+            {% endif %}
+            {% endif %}
+        {% endfor %}
+    </div>
+  </div>
+</div>
+
+<style>
+  {% assign margin_bottom =  block.settings.margin_bottom %}  
+
+    #home-about-{{ block.id }} {
+        background-color: {{ block.settings.bg_color }};
+    }
+  
+    #home-about-{{ block.id }} .title {
+        color: {{ block.settings.color_title }};
+        font-size: {{ block.settings.font_size_title }};
+        {% if block.settings.title_sub == blank %}
+            margin-bottom: {{ block.settings.font_size_title }};
+        {% else %}
+            margin-bottom: 0;
+        {% endif %}
+    }
+
+    #home-about-{{ block.id }} .sub-title {
+        color: {{ block.settings.color_title_sub }};
+        font-size: {{ block.settings.font_size_title_sub }};
+    }
+    
+    #home-about-{{ block.id }} .des {
+        color: {{ block.settings.color_des }};
+        font-size: {{ block.settings.font_size_des }};
+    }
+
+    #home-about-{{ block.id }} .btn-about-us {
+        color: {{ block.settings.color_button }};
+        border-color: {{ block.settings.color_border_button }};
+        background-color: {{ block.settings.bg_color_button }};
+    }
+    
+    @media (min-width: 1200px) {
+        #home-about-{{ block.id }} {
+        margin-bottom: {{ margin_bottom }}px;
+        }
+    }	
+
+    {% unless block.settings.display_border_top %}
+    #home-about-{{ block.id }} {
+        border-top: none;
+    }
+    {% endunless %}
+</style>

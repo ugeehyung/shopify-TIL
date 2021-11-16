@@ -1,0 +1,93 @@
+{{ 'jquery.min.js' | asset_url | script_tag }}
+{{ 'jquery-cookie.min.js' | asset_url | script_tag }}
+{{ 'lazysizes.min.js' | asset_url | script_tag }}
+
+<script>
+  	window.lazySizesConfig = window.lazySizesConfig || {};
+    lazySizesConfig.loadMode = 1;
+    window.lazySizesConfig.init = false;
+    lazySizes.init();
+  
+    window.ajax_cart = "{{ settings.ajax_popup_cart }}";
+    window.money_format = "{{shop.money_format}}";//"{{ shop.money_with_currency_format }}";
+    window.shop_currency = "{{ shop.currency }}";
+    window.show_multiple_currencies = {{ settings.enable_multiple_currencies }};
+    window.use_color_swatch = {{ settings.use_color_swatch }};
+    window.color_swatch_style = "{{ settings.color_swatch_style }}";
+    window.enable_sidebar_multiple_choice = {{ settings.enable_sidebar_multiple_choice}};
+    window.file_url = "{{ '' | file_url }}";
+    window.asset_url = "{{ '' | asset_url }}";
+    window.router = "{{ routes.cart_url | split: '/cart' | first}}";
+    window.swatch_recently = "{{settings.option_color_swatch | downcase}}";
+    window.layout_style = "{{ settings.layout_style }}";
+    window.product_style = "{{ settings.product_layout }}";
+    
+    window.inventory_text = {
+        in_stock: "{{ 'products.product.in_stock' | t }}",
+        many_in_stock: "{{ 'products.product.many_in_stock' | t }}",
+        out_of_stock: "{{ 'products.product.out_of_stock' | t }}",
+        add_to_cart: "{{ 'products.product.add_to_cart' | t }}",
+        add_all_to_cart: "{{ 'products.product.add_all_to_cart' | t }}",
+        sold_out: "{{ 'products.product.sold_out' | t }}",
+        select_options : "{{ 'products.product.select_options' | t }}",
+        unavailable: "{{ 'products.product.unavailable' | t }}",
+        view_all_collection: "{{ 'collections.general.view_all_collection' | t }}",
+        no_more_product: "{{ 'collections.general.no_more_product' | t }}",
+        show_options: "{{ 'products.product.show_options' | t }}",
+        hide_options: "{{ 'products.product.hide_options' | t }}",
+        adding : "{{ 'products.product.adding' | t }}",
+        thank_you : "{{ 'products.product.thank_you' | t }}",
+        add_more : "{{ 'products.product.add_more' | t }}",
+        cart_feedback : "{{ 'products.product.cart_feedback' | t }}",
+        add_wishlist : "{{ 'wishlist.general.add_to_wishlist' | t }}",
+        remove_wishlist : "{{ 'wishlist.general.remove_wishlist' | t }}",
+        add_wishlist_1 : "{{ 'wishlist.general.add_to_wishlist_1' | t }}",
+        remove_wishlist_1 : "{{ 'wishlist.general.remove_wishlist_1' | t }}",
+        previous: "{{ 'collections.toolbar.previous' | t }}",
+        next: "{{ 'collections.toolbar.next' | t }}",
+      	pre_order : "{{ 'products.product.pre_order' | t }}",
+        hotStock: {{ 'products.product.stock_hot' | t | json }},
+        view_more: "{{ 'collections.sidebar.view_more' | t }}",
+        view_less : "{{ 'collections.sidebar.view_less' | t }}",
+        days : "{{ 'general.count_down.days' | t }}",
+        hours : "{{ 'general.count_down.hours' | t }}",
+        mins : "{{ 'general.count_down.mins' | t }}",
+        secs : "{{ 'general.count_down.secs' | t }}",
+
+        customlabel: "{{ 'products.product.custom_label' | t }}",
+        newlabel: "{{ 'products.product.new_label' | t }}",
+        salelabel: "{{ 'products.product.sale' | t }}",
+        soldoutlabel: "{{ 'products.product.sold_out' | t }}",
+        bundlelabel: "{{ 'products.product.bundle_label' | t }}",
+
+        message_compare : "{{ 'compare.general.message' | t }}",
+        message_iscart : "{{ 'compare.general.iscart' | t }}",
+
+        add_compare : "{{ 'compare.general.add_to_compare' | t }}",
+        remove_compare : "{{ 'compare.general.remove_compare' | t }}",
+        remove: "{{ 'cart.general.remove' | t }}",
+        warning_quantity: "{{ 'general.edit_cart.warning_quantity' | t }}",
+    };
+    window.multi_lang = {{ settings.enable_multilang }};
+    window.infinity_scroll_feature = {{ settings.infinity_scroll_feature }};
+    window.newsletter_popup = {{ settings.display_popup_newsletter }};
+    window.hidden_newsletter = {{ settings.hidden_default }};
+    window.option_ptoduct1 = "size";
+    window.option_ptoduct2 = "color";
+    window.option_ptoduct3 = "option 3"
+
+    /* Free Shipping Message */
+    window.free_shipping_color1 = "{{ settings.free_shipping_color1 }}";  
+    window.free_shipping_color2 = "{{ settings.free_shipping_color2 }}";
+    window.free_shipping_color3 = "{{ settings.free_shipping_color3 }}";
+    window.free_shipping_price = {% if settings.free_shipping_price != blank %}{{ settings.free_shipping_price }}{% else %}0{% endif %};
+    window.free_shipping_text = {
+        free_shipping_message_1: "{{ 'cart.general.free_shipping_message_1' | t}}",
+        free_shipping_message_2:"{{ 'cart.general.free_shipping_message_2' | t}}",
+        free_shipping_message_3: "{{ 'cart.general.free_shipping_message_3' | t}}",
+        free_shipping_message_4: "{{ 'cart.general.free_shipping_message_4' | t}}",
+        free_shipping_1: "{{ 'cart.general.free_shipping_1' | t}}",
+        free_shipping_2: "{{ 'cart.general.free_shipping_2' | t}}",
+    }
+
+</script>

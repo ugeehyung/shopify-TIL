@@ -1,0 +1,100 @@
+{% comment %}
+  Set the extension of your color files below. Use 'png', 'jpeg', 'jpg' or 'gif'.
+{% endcomment %}
+
+{% assign file_extension = 'png' %}
+
+{% if swatch-edit-cart == blank %}
+<div class="swatch error">
+    <p>You must render the snippet swatch-edit-cart.liquid with the name of a product option.</p> 
+    <p>Use: <code>{% raw %}{% render 'swatch-edit-cart' with 'name of your product option here' %}{% endraw %}</code></p>
+    <p>Example: <code>{% raw %}{% render 'swatch-edit-cart' with 'Color' %}{% endraw %}</code></p>
+</div>
+{% else %}
+
+{% assign found_option = false %}
+{% assign is_color = false %}
+{% assign option_index = 0 %}
+{% assign size = false %}
+
+{% for option in product.options %}
+{% if option == swatch-edit-cart %}
+    {% assign found_option = true %}
+    {% assign option_index = forloop.index0 %}
+    <style>
+        #add-to-cart-edit-cart-form .selector-wrapper {
+            display:none
+        }
+    </style>
+
+    {% assign downcased_option = swatch-edit-cart | downcase %}
+    {% assign option_color_swatch = settings.option_color_swatch | downcase %}
+    {% if option_color_swatch contains downcased_option %}
+        {% assign is_color = true %}
+    {% endif %}
+
+    {% assign downcased_option = swatch-edit-cart | downcase %}
+    {% assign downcased_sizechart_opt = settings.display_size_chart_at | downcase %}
+    {% if downcased_sizechart_opt contains downcased_option %}
+        {% assign size = true %}
+    {% endif %}
+{% endif %}
+{% endfor %}
+
+{% unless found_option %}
+<div class="swatch error">
+    <p>You renderd the snippet swatch-edit-cart.liquid with the name of a product option — <code>'{{ swatch-edit-cart }}'</code> — that does not belong to your product.</p>
+    <p>Use <code>{% raw %}{% render 'swatch-edit-cart' with 'name of your product option here' %}{% endraw %}</code></p>
+    <p>Example: <code>{% raw %}{% render 'swatch-edit-cart' with 'Color' %}{% endraw %}</code></p>
+    <p><strong>This is case-sensitive!</strong> Do not put in <code>'color'</code> if your product option name is <code>'Color'</code>.</p>
+</div>
+
+{% else %}
+
+<div class="swatch{% if settings.swatch_size_color == 'large' %} swatch_size_large{% endif %}" data-option-index="{{ option_index }}">               
+    <div class="header{% if size and settings.display_size_chart and settings.size_chart == 'none' %} has-size-chart{% endif %}">
+        {% render 'multilang' with swatch-edit-cart %}:
+        <span data-header-option>{{ option.selected_value }}</span>
+    </div>
+
+    {% assign values = '' %}
+    {% for variant in product.variants %}
+        {% assign value = variant.options[option_index] %}
+        {% unless values contains value %}
+        {% assign values = values | join: ';' %}    
+        {% assign values = values | append: ';' | append: value %} 
+        {% assign values = values | split: ';' %}
+        <div data-value="{{ value | escape }}" class="swatch-element{% if is_color %} color{% endif %} {{ value | handle }}{% if variant.available %} available{% else %} soldout{% endif %}">
+            {% if is_color %}
+            <div class="tooltip">
+                {{ value }}
+            </div>
+            {% endif %}
+            
+            <input id="swatch-edit-cart-{{ option_index }}-{{ value | handle }}" type="radio" name="option-{{ option_index }}" value="{{ value | escape }}"{% if is_color %} data-image="{{ variant.image.src | product_img_url: '200x'}}"{% endif %} />
+            
+            {% if is_color %}
+            {% if settings.color_swatch_style == 'normal' %}
+            <label for="swatch-edit-cart-{{ option_index }}-{{ value | handle }}" data-label="swatch-edit-cart-{{ option_index }}">
+                <span class="bgImg" style="background-color: {{ value | split: ' ' | last | handle }}; background-image: url({{ value | handle | append: '.' | append: file_extension | file_url }})">              
+                </span>
+            </label>
+
+            {% elsif settings.color_swatch_style == 'variant' or settings.color_swatch_style == 'variant_grouped' %}
+            <label class="swatch_variant_img" for="swatch-edit-cart-{{ option_index }}-{{ value | handle }}" data-label="swatch-edit-cart-{{ option_index }}">
+                <span class="bgImg" {% if variant.image.src != blank %}style="background-image: url({{ variant.image.src | product_img_url: '100x' }}); background-size: cover;"{% else %}style="background-color: {{ value | split: ' ' | last | handle }}; background-image: url({{ value | handle | append: '.' | append: file_extension | file_url }})"{% endif %}>                
+                </span>
+            </label>
+            {% endif %}
+            
+            {% else %}
+            <label for="swatch-edit-cart-{{ option_index }}-{{ value | handle }}" data-label="swatch-edit-cart-{{ option_index }}">
+                {{ value }}
+            </label>
+            {% endif %}
+        </div>
+        {% endunless %} 
+    {% endfor %}
+</div>
+{% endunless %}
+{% endif %}

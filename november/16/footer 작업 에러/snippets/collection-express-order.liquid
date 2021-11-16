@@ -1,0 +1,24 @@
+<div class="collection-template collection-template-express-order translate-filter-pc">
+    <div class="reverse-mb">
+        {% section 'collection-header' %}
+        
+        <div class="container">
+            {% render 'breadcrumb' %}
+        </div>
+    </div>
+        
+    <div class="container">
+        <div class="halo-collection-content">
+            <div class="row">        
+                {% section 'sidebar-filter' %}
+                {% section 'collection-template-express-order' %}
+            </div>
+            
+            {% if settings.style_product_grid == 'style_product_grid_2' %}
+              {% section 'recently-viewed-products-skin-1170' %}
+            {% else %}
+              {% section 'recently-viewed-products' %}
+            {% endif %}
+        </div>   
+    </div>
+</div>

@@ -1,0 +1,57 @@
+{% if settings.header_layout == 'default' %}
+<div class="wrapper-header wrapper_header_default">
+    {% section 'header' %}
+    {% section 'navigation' %}
+</div>
+
+{% elsif settings.header_layout == 'parallax' %}
+<div class="wrapper-header wrapper_header_parallax">
+    {% section 'header-parallax' %}
+</div>
+
+{% elsif settings.header_layout == '02' %}
+<div class="wrapper-header wrapper_header_02 header-lang-style2">
+    {% section 'header-02' %}
+    {% section 'navigation' %}
+</div>
+
+{% elsif settings.header_layout == '03' %}
+<div class="wrapper-header wrapper_header_03 header-lang-style2">
+    {% section 'header-03' %}
+    {% section 'navigation' %}
+</div>
+
+{% elsif settings.header_layout == '04' %}
+<div class="wrapper-header wrapper_header_04 header-lang-style2">
+    {% section 'header-04' %}
+</div>
+
+{% elsif settings.header_layout == '05' %}
+<div class="wrapper-header wrapper_header_05 header-lang-style2">
+    {% section 'header-05' %}
+    {% section 'navigation-05' %}
+</div>
+
+{% elsif settings.header_layout == '06' %}
+<div class="wrapper-header wrapper_header_06 header-lang-style2">
+    {% section 'header-06' %}
+    {% section 'navigation-06' %}
+</div>
+
+{% elsif settings.header_layout == '07' %}
+<div class="wrapper-header wrapper_header_07 header-lang-style2">
+    {% section 'header-07' %}
+    {% section 'navigation-07' %}
+</div>
+
+{% elsif settings.header_layout == 'vertical' %}
+<div class="wrapper-header wrapper_header_vertical">
+    {% section 'header-vertical' %}
+</div>
+
+{% elsif settings.header_layout == 'supermarket' %}
+<div class="wrapper-header wrapper_header_supermarket header-lang-style2">
+    {% section 'header-supermarket' %}
+    {% section 'navigation-supermarket' %}
+</div>
+{% endif %}

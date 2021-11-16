@@ -1,0 +1,285 @@
+{% if settings.layout_style == 'layout_style_1170' %}
+  <header class="page-header">
+    <h1>
+      {{ 'cart.general.title' | t }}
+    </h1>
+  </header>
+  {% render 'breadcrumb' %}
+{% else %}
+  {% render 'breadcrumb' %}
+  <header class="page-header">
+    <h1>
+      {{ 'cart.general.title' | t }}
+    </h1>
+  </header>
+{% endif %}
+
+{% if cart.item_count > 0 %}
+  {% if settings.enable_free_shipping_message %}
+      <div class="free_shipping_progress"></div>
+      <div class="free_shipping_massage1"></div>
+  {% endif %}
+  {% if section.settings.cart_countdown_enable %}
+      <div class="cart__count_down alert alert-warning text-center" role="alert">
+          <svg class="icon icon-error" viewBox="0 0 100 100"><path d="M53,31c0,1.7-1.3,3-3,3c-1.7,0-3-1.3-3-3c0-1.7,1.3-3,3-3C51.7,28,53,29.3,53,31z M50,37c-1.7,0-3,1.4-3,3v29  c0,1.7,1.3,3,3,3c1.7,0,3-1.4,3-3V40C53,38.3,51.7,37,50,37z M95,50c0,24.8-20.2,45-45,45C25.2,95,5,74.8,5,50C5,25.2,25.2,5,50,5  C74.8,5,95,25.2,95,50z M91,50C91,27.4,72.6,9,50,9S9,27.4,9,50s18.4,41,41,41S91,72.6,91,50z"/></svg>
+          <div class="count_down" data-time="{{ section.settings.time_countdown }}">
+             {{ 'cart.general.cart_countdown' | t }} <span id="time">{{ section.settings.time_countdown }}:00</span> {{ 'cart.general.cart_countdown_minutes' | t }}.
+          </div>
+      </div>
+  {% endif %}
+{% endif %}
+{% if cart.item_count > 0 %}
+<form class="cart-form wrapper-cart-template" action="{{ routes.cart_url }}" method="post" novalidate>
+  <div class="left-col cart_items">
+    
+    <div class="cart-header">
+      <div class="cart--title">
+        {{ 'cart.label.product' | t }} 
+      </div>
+      <div class="cart--price">
+        {{ 'cart.label.price' | t }}
+      </div>
+      <div class="cart--quantity h-mobile">
+        {{ 'cart.label.quantity' | t }}
+      </div>
+      <div class="cart--total h-mobile">
+        {{ 'cart.label.total' | t }}
+      </div>
+      <div class="cart--remove h-mobile">
+        
+      </div>
+    </div>
+    
+    <ul class="cart-list">
+      {% for item in cart.items %}
+      <li class="cart-product-item" data-product_id="{{item.product_id}}" data-item-id="{{item.id}}">
+        <div class="details">   
+          <div class="cart-thumb cart--title">
+            <a class="product-img" href="{{ item.url }}">
+              <img src="{{ item | img_url: '160x' }}"  alt="{{ item.title | escape }}" />
+            </a> 
+            <div class="cart--info">
+              <a href="{{ item.url }}" class="product-name">
+                {% render 'multilang' with item.product.title %}
+              </a>
+              
+              <div class="size">  
+                {% if item.product.variants.size != 0 %}
+                {% unless item.variant.title contains 'Default' %}
+                <small>
+                  {{ item.variant.title }}
+                </small>
+                <a href="JavaScript:void(0);" class="product-details__edit" data-cart-edit aria-label="link" data-url="{{item.url}}&view=cart_edit" data-id="{{item.id}}" data-quantity="{{ item.quantity }}">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="#000000" viewBox="0 0 48 48" width="144px" height="144px"><path d="M 10.5 6 C 7.468 6 5 8.468 5 11.5 L 5 36 C 5 39.309 7.691 42 11 42 L 22.605469 42 C 22.858469 41.042 23.225516 39.759 23.728516 38 L 11 38 C 9.897 38 9 37.103 9 36 L 9 16 L 39 16 L 39 22.521484 C 39.427 22.340484 39.8615 22.188422 40.3125 22.107422 C 40.7065 22.036422 41.102859 21.992953 41.505859 22.001953 C 42.015859 22.001953 42.515 22.067641 43 22.181641 L 43 11.5 C 43 8.468 40.532 6 37.5 6 L 10.5 6 z M 13.5 20 A 1.50015 1.50015 0 1 0 13.5 23 L 15.5 23 A 1.50015 1.50015 0 1 0 15.5 20 L 13.5 20 z M 21.5 20 C 20.672 20 20 20.671 20 21.5 C 20 22.329 20.672 23 21.5 23 L 34.5 23 C 35.328 23 36 22.329 36 21.5 C 36 20.671 35.328 20 34.5 20 L 21.5 20 z M 41.498047 24 C 41.224047 24.001 40.946969 24.025172 40.667969 24.076172 C 39.783969 24.235172 38.939563 24.696156 38.226562 25.410156 L 26.427734 37.208984 C 26.070734 37.565984 25.807969 38.011141 25.667969 38.494141 L 24.097656 43.974609 C 24.025656 44.164609 23.993 44.365406 24 44.566406 C 24.013 44.929406 24.155594 45.288406 24.433594 45.566406 C 24.710594 45.843406 25.067688 45.986 25.429688 46 C 25.630688 46.007 25.834391 45.975344 26.025391 45.902344 L 31.505859 44.332031 C 31.988859 44.192031 32.431062 43.930266 32.789062 43.572266 L 44.589844 31.773438 C 45.303844 31.060437 45.764828 30.216031 45.923828 29.332031 C 45.973828 29.053031 45.997047 28.775953 45.998047 28.501953 C 46.001047 27.307953 45.540687 26.179312 44.679688 25.320312 C 43.820687 24.460313 42.692047 23.998 41.498047 24 z M 13.5 26 A 1.50015 1.50015 0 1 0 13.5 29 L 15.5 29 A 1.50015 1.50015 0 1 0 15.5 26 L 13.5 26 z M 21.5 26 C 20.672 26 20 26.671 20 27.5 C 20 28.329 20.672 29 21.5 29 L 31.808594 29 L 34.779297 26.027344 C 34.688297 26.010344 34.596 26 34.5 26 L 21.5 26 z M 13.5 32 A 1.50015 1.50015 0 1 0 13.5 35 L 15.5 35 A 1.50015 1.50015 0 1 0 15.5 32 L 13.5 32 z M 21.5 32 C 20.672 32 20 32.671 20 33.5 C 20 34.329 20.672 35 21.5 35 L 25.808594 35 L 28.808594 32 L 21.5 32 z"/></svg>
+                </a>
+                {% endunless %}
+                {% endif %}
+              </div>
+
+              <div class="properties">
+                {%- for p in item.properties -%}
+                {%- unless p.last == blank -%}
+                <label>{{ p.first }}:&nbsp;</label>
+                {%- if p.last contains '/uploads/' -%}
+                <a href="{{ p.last }}">{{ p.last | split: '/' | last }}</a>
+                {%- else -%}
+                {{ p.last }}
+                {%- endif -%}
+                <br>
+                {%- endunless -%}
+                {%- endfor -%}
+              </div>
+              {% if settings.show_vendor %}
+              <div class="product-vendor">
+                {{ item.vendor }}
+              </div>
+              {% endif %}
+              </div>
+          </div>
+
+          <div class="cart--price h-desktop">
+            <div class="price-box">
+              <span>
+                {{ item.price | money }}
+              </span>
+            </div>
+            <div class="qty-group">
+              <label for="updates_{{ item.id }}">{{ 'cart.label.quantity' | t }}</label>
+              <input type="number" name="updates[]" id="updates_{{ item.id }}" value="{{ item.quantity }}" {% if item.variant.inventory_management != null and item.variant.inventory_quantity > 0 %}data-line="{{ item.variant.inventory_quantity }}"{% endif %} min="1" class="update-cart--template">
+            </div>
+            <a class="remove remove-mobile" href="{{ routes.cart_url }}/change?line={{ forloop.index }}&amp;quantity=0" data-id="{{ item.id }}">
+                {% render 'icon-close' %}
+            </a>
+          </div>
+
+          <div class="cart--price h-mobile">
+            <div class="price-box">
+              <span>
+                {{ item.price | money }}
+              </span>
+            </div>
+          </div>
+
+          <div class="cart--quantity h-mobile">
+            <div class="qty-group">
+              <input type="number" name="updates[]" id="updates_{{ item.id }}" value="{{ item.quantity }}" {% if item.variant.inventory_management != null and item.variant.inventory_quantity > 0 %}data-line="{{ item.variant.inventory_quantity }}"{% endif %} min="1" class="update-cart--template">
+            </div>
+          </div>
+          <div class="cart--total h-mobile">
+            <span class="price" data-price="{{item.price}}">
+              {{ item.price | times: item.quantity | money }}
+            </span>
+            
+          </div>
+          <div class="cart--remove h-mobile">
+              <a class="remove" href="{{ routes.cart_url }}/change?line={{ forloop.index }}&amp;quantity=0" data-id="{{ item.id }}">
+                  {% render 'icon-close' %}
+              </a>
+          </div>
+        </div>
+      </li>
+      {% endfor %}
+    </ul>
+    
+    {% if section.settings.img_trust != blank %}
+    <div class="secure-shopping-guarantee">
+      <div class="secure-text">
+        {% render 'multilang' with section.settings.secure_text %}
+      </div>
+      <img src="{{ section.settings.img_trust | img_url: '800x'  }}">      
+    </div>
+    {% endif %}
+  </div>
+  
+  <div class="right-col">
+    <div class="cart-header">
+      <div class="cart--title summary">
+        {{ 'cart.label.order_summary' | t }} 
+      </div>
+    </div>
+    
+    <div class="groued-info">
+      <div class="total">
+        <span class="label">
+          <span>
+            {{ 'cart.label.sub_total' | t }}:
+          </span>
+        </span>
+        <span class="price">
+          {{ cart.total_price | money }}
+        </span> 
+      </div>
+
+      {% if section.settings.cart_notes %}
+      <label class="add-comments" for="cartSpecialInstructions">
+        <span>
+          {{ 'cart.general.label_text' | t }}
+        </span>
+      </label>
+      
+      <textarea name="note" class="input-full" id="cartSpecialInstructions" placeholder="{{ 'cart.general.note_placeholder' | t }}">{{ cart.note }}</textarea>
+      {% endif %}
+
+      {% unless cart.item_count == 0 %}
+      {% render 'shipping-rates-calculator' %}
+      {% endunless %}
+    </div>
+    <div class="grouped-bottom">
+      <div class="total">
+        <span class="label">
+          <span>
+            {{ 'cart.label.total' | t }}:
+          </span>
+        </span>
+        <span class="price">
+          {{ cart.total_price | money }}
+        </span> 
+      </div>
+      <div class="btn-actions">
+        {% if settings.enable_checkbox %}
+          <div class="checkbox-group">
+            <input class="conditions" type="checkbox" name="conditions">
+            <label class="title" for="conditions">
+              {{settings.checkbox_text}}
+            </label>
+            {% if settings.terms_conditions_text_link != blank %}
+              <a data-toggle="modal" data-target="#terms_condition_modal" href="javascript:void(0)" aria-label="link" aria-describedby="a11y-external-message">
+                  {{ settings.terms_conditions_text_link }}
+              </a>
+            {% endif %}
+          </div>
+          <input class="btn btn-checkout show" type="submit"  name="checkout" value="{{ 'cart.general.button_checkout' | t }}">
+        {% else %}
+          <input class="btn btn-checkout" type="submit"  name="checkout" value="{{ 'cart.general.button_checkout' | t }}">
+        {% endif %}
+        <a class="btn btn-continue" {% if settings.redirect_button == 'go_back' %}href="javascript:void(0)" onclick="window.history.back();"{% elsif settings.redirect_button == 'link_to' %} href="{{ settings.link_to_redirect }}"{% else %}href="javascript:void(0)" id="reload_page"{% endif %}>
+          {{ 'cart.ajax_cart.continue_shopping' | t }}
+        </a>
+        {% if additional_checkout_buttons %}
+        <div>{{ content_for_additional_checkout_buttons }}</div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  <input type="hidden" id="invoice_language" name="attributes[lang]" value="{{ routes.cart_url | split: 'cart' | first | remove: '/'}}">
+</form>
+{% endif %}
+
+<div class="no-item-cart" {% if cart.item_count > 0 %}style="display: none"{% endif %}>
+  <p class="alert alert-warning">
+    {{ 'cart.general.empty' | t }}
+  </p>
+  <p class="cart-empty">
+    {{ 'cart.general.continue_browsing_html' | t }}
+  </p>
+</div>
+
+{% schema %}
+  {
+    "name": "Cart Page",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "cart_notes",
+        "label": "Allow customers to add notes to their order?",
+        "default": true,
+        "info": "Only enabled in the ajax cart if you use your cart.liquid markup. See docs below."
+      },
+      {
+        "type": "header",
+        "content": "Secure Shopping Guarantee"
+      },
+      {
+        "type": "textarea",
+        "id": "secure_text",
+        "label": "Secure Shopping Guarantee Text",
+        "default": "Secure Shopping Guarantee."
+      },
+      {
+        "type": "image_picker",
+        "id": "img_trust",
+        "label": "Image Trust"
+      },
+      {
+        "type": "header",
+        "content": "Cart CountDown"
+      },
+      {
+        "type": "checkbox",
+        "id": "cart_countdown_enable",
+        "label": "Enable Count Down",
+        "default": true
+      },
+      {
+        "type": "range",
+        "id": "time_countdown",
+        "label": "Time Count Down",
+        "default": 30,
+        "min": 1,
+        "max": 60,
+        "step": 1,
+        "unit": "min"
+      }
+    ]
+  }
+{% endschema %}

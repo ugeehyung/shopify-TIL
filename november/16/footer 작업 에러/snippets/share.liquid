@@ -1,0 +1,7 @@
+<div class="share_toolbox">  
+  {% if section.settings.share_text != blank %}
+  	{% render 'multilang' with section.settings.share_text %}
+  {% endif %}
+  <!----- www.addthis.com/dashboard ----->
+  {{ settings.embed_code_share }}
+</div>

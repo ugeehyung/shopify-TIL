@@ -1,0 +1,29 @@
+<div class="product-template product-template-slider">
+    <div class="container">
+        {% if collection %}
+        <div class="next_prev-groups">
+            {% render 'breadcrumb' %}
+            {% render 'next-prev-product' %} 	
+        </div>
+
+        {% else %}
+        {% render 'breadcrumb' %}
+        {% endif %}
+    </div>       
+    <div class="halo-product-content">
+        <div class="pro-page">
+            {% section 'product-template-slider' %}
+            {% section 'product-recommendations' %}
+        </div>
+
+        <div class="container">
+            {% if settings.style_product_grid == 'style_product_grid_2' %}
+                {% section 'recently-viewed-products-skin-1170' %}
+            {% elsif settings.style_product_grid == 'style_product_grid_3' %}
+                {% section 'recently-viewed-products-skin-fullwidth' %}
+            {% else %}
+                {% section 'recently-viewed-products' %}
+            {% endif %}
+        </div>           
+    </div>   
+</div>

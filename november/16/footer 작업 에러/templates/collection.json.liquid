@@ -1,0 +1,28 @@
+{% layout none %}
+{%- for tag in current_tags -%}
+    {%- if tag contains 'sectionId=' -%}
+        {%- assign sectionId = tag | remove: 'sectionId=' -%}
+    {%- endif -%}
+{%- endfor -%}
+<div class="product-grids">
+    <div class="grid-items">
+        {% if collections[collection.handle].products_count > 0 %}    
+        {% for product in collections[collection.handle].products limit: 10 %}
+        <div class="grid-item col-6 col-md-4 col-lg-3 col5{% if settings.product_image_border %} grid-item-border{% endif %} ">
+            {% if settings.style_product_grid == 'style_product_grid_2' %}
+              {% render 'product-grid-item-style-2', product: product, sectionId: sectionId, serial: forloop.index %}
+            {% elsif settings.style_product_grid == 'style_product_grid_3' %}
+              {% render 'product-grid-item-style-3', product: product, sectionId: sectionId, serial: forloop.index %}  
+            {% else %}
+              {% render 'product-grid-item', product: product, sectionId: sectionId, serial: forloop.index %}
+            {% endif %}
+        </div>
+        {% endfor%}
+
+        {% else %}
+        <div class="text-center" {% if settings.enable_multilang %}data-translate="collections.general.no_matches"{% endif %}>
+            {{ 'collections.general.no_matches' | t }}
+        </div>
+        {% endif %}
+    </div>
+</div>

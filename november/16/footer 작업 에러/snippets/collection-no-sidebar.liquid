@@ -1,0 +1,55 @@
+{% if settings.layout_style == 'layout_style_fullwidth' %}
+<div class="collection-template collection-template-no-sidebar">
+    {% section 'collection-header' %}
+    <div class="container">
+        {% render 'breadcrumb' %}
+    </div>
+    <div class="halo-collection-content">
+        <div class="bg-filter">
+            <div class="container">
+                {% section 'filter-no-sidebar' %}   
+            </div>
+        </div>
+        <div class="container">
+            {% section 'collection-template-no-sidebar' %}
+        </div>        
+    </div>
+    {% section 'home-custom-block-baner' %}
+</div>
+{% else %}
+<div class="collection-template collection-template-no-sidebar">
+    <div class="container">
+        {% render 'breadcrumb' %}
+    </div>
+
+    <div class="halo-collection-content">
+        <div class="bg-header-page">
+            <div class="container">
+                <div class="page-header text-center">
+                    <h1>
+                        {% render 'multilang' with collection.title %}
+                    </h1>
+                </div>
+            </div>            
+        </div>
+
+        <div class="bg-filter">
+            <div class="container">
+                {% section 'filter-no-sidebar' %}   
+            </div>
+        </div>
+
+        <div class="container">
+            {% section 'collection-template-no-sidebar' %}
+
+            {% if settings.style_product_grid == 'style_product_grid_2' %}
+              {% section 'recently-viewed-products-skin-1170' %}
+            {% elsif settings.style_product_grid == 'style_product_grid_3' %}
+              {% section 'recently-viewed-products-skin-fullwidth' %}
+            {% else %}
+              {% section 'recently-viewed-products' %}
+            {% endif %}
+        </div>        
+    </div>
+</div>
+{% endif %}

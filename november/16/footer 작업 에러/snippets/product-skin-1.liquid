@@ -1,0 +1,24 @@
+<div class="product-template product-template-skin-1">
+  <div class="">
+    <div class="halo-product-content">
+      <div class="pro-page">
+        {% section 'product-template-skin-1' %}
+        <div class="container">
+          {% section 'product-recommendations' %}
+        </div>
+      </div>
+      <div class="container">
+        {% if settings.style_product_grid == 'style_product_grid_2' %}
+          {% section 'recently-viewed-products-skin-1170' %}
+        {% elsif settings.style_product_grid == 'style_product_grid_3' %}
+          {% section 'recently-viewed-products-skin-fullwidth' %}
+        {% else %}
+          {% section 'recently-viewed-products' %}
+        {% endif %}
+      </div>
+    </div>   
+  </div>
+  {% unless settings.layout_style == 'layout_style_fullwidth' or settings.layout_style == 'layout_style_flower' %}
+    {% section 'home-custom-block-spotlight-product-page' %}
+  {% endunless %}
+</div>

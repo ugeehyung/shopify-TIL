@@ -1,0 +1,109 @@
+<div class="tabs__product-page vertical-tabs">
+  <div class="wrapper-tab-content">
+    
+    {% if section.settings.display_custom_tab_1 %}
+      <div class="tab-title">
+        <a href="#" data-tapTop data-target="#collapse-tab3" class="tab-links">
+          {% render 'multilang' with section.settings.custom_tab_title_1 %}
+        </a>
+      </div>
+      <div class="tab-content" data-TabContent id="collapse-tab3">
+          {% if product.metafields.c_f['custom tab1'] != blank %}
+             {% assign des = product.metafields.c_f['custom tab1'] %}
+              <div>
+                  {{ des }}
+              </div>
+          {% else %}
+              {% assign des = section.settings.custom_tab_content_1 %}
+              <div>
+                  {{ des }}
+              </div>
+          {% endif %}
+      </div>
+    {% endif %}
+
+    {% if section.settings.display_custom_tab_2 %}
+      <div class="tab-title">
+        <a href="#" data-tapTop data-target="#collapse-tab4" class="tab-links">
+          {% render 'multilang' with section.settings.custom_tab_title_2 %}
+        </a>
+      </div>
+      <div class="tab-content" data-TabContent id="collapse-tab4">
+          {% if product.metafields.c_f['custom tab2'] != blank %}
+             {% assign des = product.metafields.c_f['custom tab2'] %}
+              <div>
+                  {{ des }}
+              </div>
+          {% else %}
+              {% assign des = section.settings.custom_tab_content_2 %}
+              <div>
+                  {{ des }}
+              </div>
+          {% endif %}
+      </div>
+    {% endif %}
+
+    {% if section.settings.display_custom_tab_3 %}
+      <div class="tab-title">
+        <a href="#" data-tapTop data-target="#collapse-tab5" class="tab-links">
+          {% render 'multilang' with section.settings.custom_tab_title_3 %}
+        </a>
+      </div>
+      <div class="tab-content" data-TabContent id="collapse-tab5">
+          {% if product.metafields.c_f['custom tab3'] != blank %}
+             {% assign des = product.metafields.c_f['custom tab3'] %}
+              <div>
+                  {{ des }}
+              </div>
+          {% else %}
+              {% assign des = section.settings.custom_tab_content_3 %}
+              <div>
+                  {{ des }}
+              </div>
+          {% endif %}
+      </div>
+    {% endif %}
+
+    {% if section.settings.display_custom_tab_4 %}
+      <div class="tab-title">
+        <a href="#" data-tapTop data-target="#collapse-tab6" class="tab-links">
+          {% render 'multilang' with section.settings.custom_tab_title_4 %}
+        </a>
+      </div>
+      <div class="tab-content" data-TabContent id="collapse-tab6">
+          {% if product.metafields.c_f['custom tab4'] != blank %}
+             {% assign des = product.metafields.c_f['custom tab4'] %}
+              <div>
+                  {{ des }}
+              </div>
+          {% else %}
+              {% assign des = section.settings.custom_tab_content_4 %}
+              <div>
+                  {{ des }}
+              </div>
+          {% endif %}
+      </div>
+    {% endif %}
+
+    {% if section.settings.display_custom_tab_5 %}
+      <div class="tab-title">
+        <a href="#" data-tapTop data-target="#collapse-tab7" class="tab-links">
+          {% render 'multilang' with section.settings.custom_tab_title_5 %}
+        </a>
+      </div>
+      <div class="tab-content" data-TabContent id="collapse-tab7">
+          {% if product.metafields.c_f['custom tab5'] != blank %}
+             {% assign des = product.metafields.c_f['custom tab5'] %}
+              <div>
+                  {{ des }}
+              </div>
+          {% else %}
+              {% assign des = section.settings.custom_tab_content_5 %}
+              <div>
+                  {{ des }}
+              </div>
+          {% endif %}
+      </div>
+    {% endif %}
+  </div>
+</div>

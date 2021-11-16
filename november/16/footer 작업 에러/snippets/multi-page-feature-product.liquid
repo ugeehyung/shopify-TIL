@@ -1,0 +1,322 @@
+{%- liquid
+  case block.settings.collection_results_per_row1
+    when '1'
+      assign grid_item_width = 'col-12'
+      assign row = 'one-items'
+    when '2'
+      assign grid_item_width = 'col-6'
+      assign row = 'two-items'
+    when '3'
+      assign grid_item_width = 'col-6 col-md-4'
+      assign row = 'three-items'
+    when '4'
+      assign grid_item_width = 'col-6 col-md-4 col-lg-3'
+      assign row = 'four-items'
+    when '5'
+      assign grid_item_width = 'col-6 col-md-4 col-lg-3 col5'
+      assign row = 'five-items'
+    when '6'
+      assign grid_item_width = 'col-6 col-md-4 col-lg-3 col-xl-2'
+      assign row = 'six-items'
+  endcase
+  assign item_to_show = block.settings.collection_results_per_row1
+  if block.settings.layout_style == 'layout_style_2'
+    assign item_to_show = 1
+  endif
+-%}
+
+<div class="featured-products{% if block.settings.display_banner %} has-banner{% endif %}{% if block.settings.banner_is == 'right'%} banner-right{% endif %}{% if block.settings.layout_style == 'layout_style_2' %} layout_style_2{% elsif block.settings.layout_style == 'layout_style_3' %} layout_style_3{% elsif block.settings.layout_style == 'layout_style_4' %} layout_style_4{% else %} layout_style_1{% endif %}" id="featured-products-{{block.id}}" {% if block.settings.layout_style == 'layout_style_1' or block.settings.layout_style == 'layout_style_3' or block.settings.layout_style == 'layout_style_4' %}data-featured-products{% endif %} {% if block.settings.show_slider_featured_collection != blank %}data-loader-product data-collection="{{block.settings.show_slider_featured_collection}}" data-limit="{{ block.settings.slider_featured_limit_all }}" data-grid="{{ block.settings.collection_results_per_row1 }}" data-layout="carousel" sectionId="{{block.id}}"{% endif %} >
+  <div class="{% if block.settings.display_banner %}{% if block.settings.layout_style == 'layout_style_2' %}container{% else %}container-fluid{% endif %}{% else %}container{% endif %}">
+    {% if block.settings.layout_style == 'layout_style_2' %}
+      {% if block.settings.featured_products_title != blank %}
+        <div class="widget-title{% if block.settings.title_style == 'style_2' %} not-before {% elsif block.settings.title_style == 'style_3' %} style_3 {% endif %}">   
+          <h3 class="box-title">
+            <span class="title"> 
+              {% render 'multilang' with block.settings.featured_products_title %}
+            </span>
+          </h3>
+          {% if block.settings.featured_products_des != blank %}
+          <p>
+            {% render 'multilang' with block.settings.featured_products_des %}
+          </p>        
+          {% endif %}
+          {% if block.settings.featured_products_text_link != blank %}
+            <a class="box-link" href="{{ block.settings.featured_products_link }}">{{ block.settings.featured_products_text_link }}</a>
+          {% endif %}     
+        </div>
+        {% endif %}
+    {% endif %}
+    <div class="row{% if block.settings.banner_is == 'right' %} flex-row-reverse{% endif %}">
+      {% if block.settings.layout_style == 'layout_style_3' %}
+
+        <div class="col-12 col-md-3">
+          {% if block.settings.featured_products_title != blank %}
+          <div class="widget-title{% if block.settings.title_style == 'style_2' %} not-before {% elsif block.settings.title_style == 'style_3' %} style_3 {% endif %}">   
+            <h3 class="box-title">
+              <span class="title"> 
+                {% render 'multilang' with block.settings.featured_products_title %}
+              </span>
+            </h3>
+            {% if block.settings.featured_products_des != blank %}
+            <p>
+              {% render 'multilang' with block.settings.featured_products_des %}
+            </p>        
+            {% endif %}
+            {% if block.settings.featured_products_text_link != blank %}
+              <a class="box-link" href="{{ block.settings.featured_products_link }}">{{ block.settings.featured_products_text_link }}</a>
+            {% endif %}     
+          </div>
+          {% endif %}
+        </div>
+        <div class="col-12 col-md-9">
+          {% if block.settings.display_banner %}
+          <div class="column-product-inner">
+          {% endif %}
+          <div class="widget-product">
+            <div class="products-grid row {{ row }}" data-row="{{ block.settings.collection_results_per_row1 }}">
+              {% for product in collections[block.settings.show_slider_featured_collection].products limit:block.settings.slider_featured_limit_all %}
+              <div class="grid-item {{ grid_item_width }}{% if settings.product_image_border %} grid-item-border{% endif %} ">
+                {% render 'before-load-grid-item', product: product %}
+              </div>
+              {% else %}
+              {% for product in (1..block.settings.slider_featured_limit_all) %}
+              <div class="grid-item {{ grid_item_width }}">
+                <div class="grid-view-item no-product">
+                  <div class="product-top">
+                    <div class="not_img">
+                      Product Img
+                    </div>
+                  </div>
+
+                  <div class="product-bottom">
+                    <div class="product-title">
+                      <span>
+                        Your product's name
+                      </span>`
+                    </div>
+
+                    <div class="price-box">
+                      <span> $250.00 </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              {% endfor %}
+              {% endfor %}
+            </div>
+          </div>
+          {% if block.settings.display_banner %}
+          </div>
+          {% endif %}
+        </div>
+        
+      {% else %}
+
+        {% if block.settings.display_banner %}
+        <div class="no-padd col-12 col-md-12 col-lg-6 column-banner">
+          <div class="column-banner-inner">
+            <div class="img-box">
+              <a href="{{ block.settings.link }}">
+                {%- assign img_url = block.settings.image | img_url: '970x' -%}
+                {% if block.settings.image != blank %}
+                <img data-srcset="{{ img_url }}" alt="{{ block.settings.image.alt | default: shop.name }}" itemprop="logo"
+                     class="lazyload" data-sizes="auto">
+                {% else %}
+                <div class="not_img">
+                  725 x 640px
+                </div>   
+                {% endif %}
+              </a>
+            </div>
+
+            {% if block.settings.banner_heading != blank or block.settings.banner_sub_heading != blank or block.settings.banner_des != blank or block.settings.banner_button != blank %}
+            <div class="custom-block-imgs">
+              {% if block.settings.banner_heading != blank %}
+              <h3 class="banner-heading"
+                  style="{% if block.settings.font_size_banner_heading != blank %}
+                         font-size: {{ block.settings.font_size_banner_heading }};
+                         {% endif %}
+                         {% if block.settings.color_banner_heading != blank %}
+                         color:{{ block.settings.color_banner_heading }};
+                         {% endif %}">
+                {% render 'multilang' with block.settings.banner_heading  %}
+              </h3>
+              {% endif %}
+
+              {% if block.settings.banner_sub_heading != blank %}
+              <h5 class="banner-sub-heading"
+                  style="{% if block.settings.font_size_banner_sub_heading != blank %}
+                         font-size: {{ block.settings.font_size_banner_sub_heading }};
+                         {% endif %}
+                         {% if block.settings.color_banner_sub_heading != blank %}
+                         color:{{ block.settings.color_banner_sub_heading }};
+                         {% endif %}">            
+                {% render 'multilang' with block.settings.banner_sub_heading  %}
+              </h5>
+              {% endif %}
+
+              {% if block.settings.banner_des != blank %}
+              <p class="banner-des"
+                 style="{% if block.settings.font_size_banner_des != blank %}
+                        font-size: {{ block.settings.font_size_banner_des }};
+                        {% endif %}
+                        {% if block.settings.color_banner_des != blank %}
+                        color: {{ block.settings.color_banner_des }};
+                        {% endif %}">
+                {% render 'multilang' with block.settings.banner_des  %}
+              </p>
+              {% endif %}
+
+              {% if block.settings.banner_button != blank %}
+              <a href="{{ block.settings.link }}" class="banner-button btn"
+                 style="{% if block.settings.bg_banner_button != blank %}
+                        background-color:{{ block.settings.bg_banner_button }};
+                        {% endif %}
+                        {% if block.settings.border_banner_button != blank %}
+                        border-color:{{ block.settings.border_banner_button }};
+                        {% endif %}
+                        {% if block.settings.color_banner_button != blank %}
+                        color:{{ block.settings.color_banner_button }};
+                        {% endif %}">
+                {% render 'multilang' with block.settings.banner_button %}
+              </a>
+              {% endif %}
+
+              {% if block.settings.layout_style == 'layout_style_2' %}
+                {% if block.settings.banner_button_2 != blank %}
+                <a href="{{ block.settings.link_2 }}" class="banner-button btn"
+                   style="{% if block.settings.bg_banner_button_ != blank %}
+                          background-color:{{ block.settings.bg_banner_button }};
+                          {% endif %}
+                          {% if block.settings.border_banner_button != blank %}
+                          border-color:{{ block.settings.border_banner_button }};
+                          {% endif %}
+                          {% if block.settings.color_banner_button != blank %}
+                          color:{{ block.settings.color_banner_button }};
+                          {% endif %}">
+                  {% render 'multilang' with block.settings.banner_button_2 %}
+                </a>
+                {% endif %}
+              {% endif %}
+
+            </div>
+            {% endif %}
+          </div>        
+        </div>
+        {% endif %}
+        <div class="col-12{% if block.settings.display_banner %} col-md-12 col-lg-6 column-product{% else %} col-md-12{% endif %}">
+          
+          {% if block.settings.display_banner %}
+          <div class="column-product-inner">
+          {% endif %}
+            
+          {% if block.settings.layout_style == 'layout_style_1' %}  
+            {% if block.settings.featured_products_title != blank %}
+            <div class="widget-title{% if block.settings.title_style == 'style_2' %} not-before {% elsif block.settings.title_style == 'style_3' %} style_3 {% endif %}">   
+              <h3 class="box-title">
+                <span class="title"> 
+                  {% render 'multilang' with block.settings.featured_products_title %}
+                </span>
+              </h3>
+              {% if block.settings.featured_products_des != blank %}
+              <p>
+                {% render 'multilang' with block.settings.featured_products_des %}
+              </p>        
+              {% endif %}
+              {% if block.settings.featured_products_text_link != blank %}
+                <a class="box-link" href="{{ block.settings.featured_products_link }}">{{ block.settings.featured_products_text_link }}</a>
+              {% endif %}
+            </div>
+            {% endif %}
+          {% endif %}
+
+          <div class="widget-product">
+            <div class="products-grid row {{ row }}" data-row="{{ block.settings.collection_results_per_row1 }}">
+              {% for product in collections[block.settings.show_slider_featured_collection].products limit:item_to_show %}
+              <div class="grid-item {{ grid_item_width }}{% if settings.product_image_border %} grid-item-border{% endif %} ">
+                  {% render 'before-load-grid-item', product: product %}
+              </div>
+
+              {% else %}
+              {% for product in (1..block.settings.slider_featured_limit_all) %}
+              <div class="grid-item {{ grid_item_width }}">
+                <div class="grid-view-item no-product">
+                  <div class="product-top">
+                    <div class="not_img">
+                      Product Img
+                    </div>
+                  </div>
+
+                  <div class="product-bottom">
+                    <div class="product-title">
+                      <span>
+                        Your product's name
+                      </span>`
+                    </div>
+
+                    <div class="price-box">
+                      <span> $250.00 </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              {% endfor %}
+              {% endfor %}
+            </div>
+          </div>
+            
+          {% if block.settings.display_banner %}
+          </div>
+          {% endif %}
+        </div>
+
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<style>
+  {% assign margin_bottom =  block.settings.margin_bottom %} 
+
+    @media (max-width: 767px) {
+        #featured-products-{{block.id}} {
+            margin-bottom: {{ block.settings.margin_bottom_mb }}px;
+        }
+    }
+
+    @media (min-width: 768px) and (max-width: 1199px) {
+        #featured-products-{{block.id}} {
+            margin-bottom: {{ block.settings.margin_bottom_tab }}px;
+        }
+    }
+
+  @media (min-width: 1200px) {
+    #featured-products-{{block.id}} {
+      margin-bottom: {{ margin_bottom }}px;
+    }
+  }
+
+  #featured-products-{{block.id}} .box-link {
+    color: {{ block.settings.color_text_link }};
+  }
+
+  {% if block.settings.layout_style == 'layout_style_2' %}
+    .featured-products.has-banner.layout_style_2.banner-right {
+      border-bottom: 0;
+    }
+    #featured-products-{{block.id}} .column-banner .banner-button:hover {
+      background-color: transparent !important;
+      border-color: transparent !important;
+      color:{{ block.settings.color_banner_button }} !important;
+    }
+    #featured-products-{{block.id}} .column-banner .custom-block-imgs .banner-button span:hover:before {
+      background-color: {{ block.settings.color_banner_button }};
+    }
+    .featured-products.has-banner.layout_style_2 .column-banner .custom-block-imgs {
+      background-color: {{ block.settings.bg_color_box_style_2 }};
+    }
+    .featured-products.has-banner.layout_style_2 .column-banner .custom-block-imgs:before {
+      border-color: {{ block.settings.border_color_box_style_2 }};
+    }
+  {% endif %}
+</style>

@@ -1,0 +1,68 @@
+{% assign beforeYouLeave_time = beforeYouLeave_time | default: settings.before_you_leave_expire | times: 60000 %}
+{% assign collection = collections[settings.before_you_leave_products] %}
+
+
+<div class="before-you-leave__wrapper" data-time="{{beforeYouLeave_time}}">
+    <a href="javascript:void(0)" title="Close" class="close-before-you-leave close">
+      <svg aria-hidden="true" data-prefix="fal" data-icon="times" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" class="svg-inline--fa fa-times fa-w-10 fa-2x"><path fill="currentColor" d="M193.94 256L296.5 153.44l21.15-21.15c3.12-3.12 3.12-8.19 0-11.31l-22.63-22.63c-3.12-3.12-8.19-3.12-11.31 0L160 222.06 36.29 98.34c-3.12-3.12-8.19-3.12-11.31 0L2.34 120.97c-3.12 3.12-3.12 8.19 0 11.31L126.06 256 2.34 379.71c-3.12 3.12-3.12 8.19 0 11.31l22.63 22.63c3.12 3.12 8.19 3.12 11.31 0L160 289.94 262.56 392.5l21.15 21.15c3.12 3.12 8.19 3.12 11.31 0l22.63-22.63c3.12-3.12 3.12-8.19 0-11.31L193.94 256z" class=""></path></svg>
+      <span>
+        Close
+      </span>
+    </a>
+    {% if settings.before_you_leave_logo != blank %}
+        <div class="before-you-leave__header text-center">
+            {% assign img_url = settings.before_you_leave_logo | img_url: '120x' %}
+            <img class="lazyload" data-srcset="{{ img_url }}" alt="" data-image>
+        </div>
+    {% else %}
+        <div class="before-you-leave__header before-you-leave__header--text text-center">
+            {% if settings.before_you_leave_logo_text != blank %}
+                {{ settings.before_you_leave_logo_text }}
+            {% else %}
+                {{ shop.name }}
+            {% endif %}
+        </div>
+    {% endif %}
+    <div class="before-you-leave__bg text-center">
+        {% if settings.before_you_leave_bg != blank %}
+            {% assign img_url = settings.before_you_leave_bg | img_url: '470x' %}
+            {% assign img_url_2 = settings.before_you_leave_bg | img_url: '331x' %}
+            <img class="before-you-leave__img lazyload" 
+                data-srcset="{{ img_url_2 }} 180w, {{ img_url }} 400w"
+                data-sizes="auto" alt="" data-image>
+        {% endif %}
+        <div class="rte">
+            {{ settings.before_you_leave_des }}
+        </div>
+        <a class="btn btn--secondary" {% if settings.redirect_button == 'go_back' %}href="javascript:void(0)" onclick="window.history.back();"{% elsif settings.redirect_button == 'link_to' %} href="{{ settings.link_to_redirect }}"{% else %}href="javascript:void(0)" id="reload_page"{% endif %}>{{ 'general.beforeyouleave.continue_shopping' | t }}</a>
+    </div>
+    {% if settings.before_you_leave_products != blank %}
+    <div class="before-you-leave__content">
+        <div class="before-you-leave__content--title">
+            <p class="title">
+                {{ 'general.beforeyouleave.recommended' | t }} {% if collection.products_count != blank %}<span class="count">{{ collection.products_count }}</span>{% endif %}
+            </p>
+            <a class="search" href="javascript:void(0)" aria-label="search" data-search-popup>
+                <svg class="icon icon-search"><use xlink:href="#icon-search"></use></svg>
+                <svg class="icon icon-close"><use xlink:href="#icon-close"></use></svg>
+            </a>
+        </div>
+        <div class="before-you-leave__content--product">
+            <div class="products-grid">
+                {% for product in collection.products limit: 3 %}
+                    <div class="grid-item {{ grid_item_width }}{% if settings.product_image_border %} grid-item-border{% endif %}">
+                        {% if settings.layout_style == 'layout_style_fullwidth' %}
+                            {% render 'product-grid-item-before-you-leave-layout-fullwidth' with product as product, serial: forloop.index %}
+                        {% else %}
+                            {% render 'product-grid-item-before-you-leave' with product as product, serial: forloop.index %}
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+            <div class="before-you-leave__button">
+                <a class="btn btn--secondary" href="{{ routes.root_url }}"> {{ 'general.beforeyouleave.back_to_store' | t }} </a>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>

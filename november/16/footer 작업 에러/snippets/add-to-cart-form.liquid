@@ -1,0 +1,55 @@
+{% assign variantCount = product.variants | size %}
+{% assign downcased_option = product.options_with_values[0].name | downcase %}
+{% assign option_color_swatch = settings.option_color_swatch | downcase %}
+<form action="{{ routes.cart_url }}/add" method="post" class="variants" id="{{id}}-{{ product.id }}-{{ sectionId }}" data-id="product-actions-{{ product.id }}" enctype="multipart/form-data">
+  {% if sold_out %}
+  <button class="btn add-to-cart-btn" type="submit" disabled="disabled" {% if settings.enable_multilang %}data-translate="products.product.unavailable"{% endif %}>
+    {{ 'products.product.unavailable' | t }}
+  </button>
+  {% else %}
+  {% if variantCount > 0 and product.variants.first.title != 'Default Title' %}
+    {% if product.options_with_values.size == 1 and option_color_swatch contains downcased_option and settings.use_color_swatch %}
+      <input type="hidden" name="id" value="{{ product.variants[0].id }}" />
+      <input type="hidden" name="quantity" value="1" />
+      <button data-btn-addToCart class="btn add-to-cart-btn" type="submit" data-form-id="#{{id}}-{{ product.id }}-{{ sectionId }}" {% if settings.enable_multilang %}data-translate="products.product.add_to_cart"{% endif %}>
+        {{ 'products.product.add_to_cart' | t }} 
+      </button>
+    {% else %}
+      {% if settings.enable_quick_shop %}
+        <a class="btn" data-href="{{ product.url }}" title="{{ product.title }}" data-init-quickshop tabindex>
+          {{ 'products.product.add_to_cart' | t }}
+        </a>
+      {% else %}
+        <a class="btn" href="{{ product.url }}" title="{{ product.title }}">
+          {{ 'products.product.select_options' | t }}
+        </a>
+      {% endif %}
+    {% endif %}
+  {% else %}
+  <input type="hidden" name="id" value="{{ product.variants[0].id }}" />
+  <input type="hidden" name="quantity" value="1" />
+  {%- assign current_variant_grid = product.selected_or_first_available_variant -%}
+  {% assign first_inventory_grid = current_variant_grid.inventory_quantity %}
+  
+  {% if first_inventory_grid > 0 %}
+  <button data-btn-addToCart class="btn add-to-cart-btn" type="submit" data-form-id="#{{id}}-{{ product.id }}-{{ sectionId }}" {% if settings.enable_multilang %}data-translate="products.product.add_to_cart"{% endif %}>
+    {{ 'products.product.add_to_cart' | t }} 
+  </button>
+  {% else %}
+  <button data-btn-addToCart class="btn add-to-cart-btn" type="submit" data-form-id="#{{id}}-{{ product.id }}-{{ sectionId }}" {% if settings.enable_multilang %}data-translate="products.product.pre_order"{% endif %}>
+    {{ 'products.product.pre_order' | t }} 
+  </button>
+  {% endif %} 
+  
+  {% endif %}
+  {% endif %}
+</form>
+{% if settings.enable_quick_shop %}
+  {% if product.available %}
+      {% if variantCount > 0 and product.variants.first.title != 'Default Title' %}
+          <div class="product-card__variant--popup">
+              {% render 'swatch-quick-shop', product: product, id: id, list: list, position: position, sectionId: sectionId %}
+          </div>
+      {% endif %}
+  {% endif %}
+{% endif %}

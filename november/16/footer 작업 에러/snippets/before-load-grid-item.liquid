@@ -1,0 +1,120 @@
+{% if settings.style_product_grid == 'style_product_grid_2' %}
+<div class="inner product-item{% if sold_out %} sold-out{% endif %}{% if on_sale %} on-sale{% endif %}" data-product-id="product-{{ product.id }}">
+  <div class="inner-top">
+    <div class="product-top">
+      <div class="product-image{% if product.images.size > 1 and settings.image_swap %} image-swap{% endif %}">
+        <a href="{{ product.url | within: collection }}" class="product-grid-image adaptive_height" data-collections-related="{{ routes.collections_url }}/{{collection.handle}}?view=related" {% unless settings.product_image_resize %}style="padding-top: {{ 1 | divided_by: product.featured_image.aspect_ratio | times: 100 }}%"{% endunless %}>
+          <img data-srcset="" class="lazyloading" alt="{{product.featured_image.alt | default: product.title}}" />
+        </a>
+      </div>
+    </div>
+    <div class="product-bottom">
+      <div class="wrapper-vendor">
+        {% if settings.show_vendor %}
+        <div class="product-vendor">
+          {{ product.vendor | link_to_vendor }}
+        </div>
+        {% endif %}
+      </div>
+      <div class="wrapper-compare">
+        {% if settings.display_item_swatch %}
+          <ul class="item-swatch"><li><label></label></li></ul>
+        {% endif %}
+      </div>
+      <a class="product-title {% if select != blank %}change-text{% endif %}" href="{{ product.url | within: collection }}">
+        {{ product.title }}
+      </a>
+
+      <div class="price-box">
+        {% if on_sale %}
+        <div class="price-sale">
+          {% if settings.enable_quick_shop %}
+            <span class="old-price" data-compare-price-grid>{{ product.variants[0].compare_at_price | money }}</span>
+            <span class="special-price" data-price-grid>{{ product.variants[0].price | money }}</span>
+          {% else %}
+            <span class="old-price" >{{ product.compare_at_price_min | money }}</span>
+            <span class="special-price">
+              {% if product.price_varies %}{% render 'varies_from' %}{% endif %}{{ product.price_min | money }}
+            </span>
+          {% endif %}
+        </div>
+        {% else %}
+          {% if settings.enable_quick_shop %}
+          <div class="price-regular">
+            <span data-price-grid>{{ product.variants[0].price | money }}</span>
+          </div>
+          {% else %}
+          <div class="price-regular">
+            <span>{% if product.price_varies %}{% render 'varies_from' %}{% endif %}{{ product.price_min | money }}</span>
+          </div>
+          {% endif %}
+        {% endif %}
+      </div>
+     
+      <div class="wrapper-size">
+        {% if settings.display_product_reviews %}
+          <span class="shopify-product-reviews-badge" data-id="{{ product.id }}"></span>
+        {% endif %}
+        {% assign variant_size = product.options_by_name['Size'].values | size %}
+        {% if variant_size > 0 %}
+          <span class="text-size">{{ 'products.product.size' | t }}</span>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+{% else %}
+<div class="inner product-item{% if sold_out %} sold-out{% endif %}{% if on_sale %} on-sale{% endif %}" data-product-id="product-{{ product.id }}">
+  <div class="inner-top">
+    <div class="product-top">
+      <div class="product-image{% if product.images.size > 1 and settings.image_swap %} image-swap{% endif %}">
+        <a href="{{ product.url | within: collection }}" class="product-grid-image adaptive_height" data-collections-related="{{ routes.collections_url }}/{{collection.handle}}?view=related" {% unless settings.product_image_resize %}style="padding-top: {{ 1 | divided_by: product.featured_image.aspect_ratio | times: 100 }}%"{% endunless %}>
+          <img data-srcset="" class="lazyloading" alt="{{product.featured_image.alt | default: product.title}}" />
+        </a>
+      </div> 
+    </div>
+    <div class="product-bottom">
+      <div class="wrapper-compare">
+        {% if settings.show_vendor %}
+          <div class="product-vendor">
+            {{ product.vendor | link_to_vendor }}
+          </div>
+        {% endif %}
+      </div>
+      <a class="product-title {% if select != blank %}change-text{% endif %}" href="{{ product.url | within: collection }}">
+        {% render 'multilang' with product.title %}
+      </a>
+
+      <div class="price-box">
+        {% if on_sale %}
+        <div class="price-sale">
+          {% if settings.enable_quick_shop %}
+            <span class="old-price" data-compare-price-grid>{{ product.variants[0].compare_at_price | money }}</span>
+            <span class="special-price" data-price-grid>{{ product.variants[0].price | money }}</span>
+          {% else %}
+            <span class="old-price" >{{ product.compare_at_price_min | money }}</span>
+            <span class="special-price">
+              {% if product.price_varies %}{% render 'varies_from' %}{% endif %}{{ product.price_min | money }}
+            </span>
+          {% endif %}
+        </div>
+        {% else %}
+          {% if settings.enable_quick_shop %}
+          <div class="price-regular">
+            <span data-price-grid>{{ product.variants[0].price | money }}</span>
+          </div>
+          {% else %}
+          <div class="price-regular">
+            <span>{% if product.price_varies %}{% render 'varies_from' %}{% endif %}{{ product.price_min | money }}</span>
+          </div>
+          {% endif %}
+        {% endif %}
+      </div>
+
+      	{% if settings.display_item_swatch %}
+	      <ul class="item-swatch"><li><label></label></li></ul>
+	    {% endif %}
+    </div>
+  </div>
+</div>
+{% endif %}

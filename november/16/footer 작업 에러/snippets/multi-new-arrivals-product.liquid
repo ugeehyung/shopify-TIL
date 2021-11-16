@@ -1,0 +1,120 @@
+{% case block.settings.collection_results_per_row1 %}
+  {% when '2' %}
+    {%- assign grid_item_width = 'col-6' -%}
+  {% when '3' %}
+    {%- assign grid_item_width = 'col-6 col-md-4' -%}
+  {% when '4' %}
+    {%- assign grid_item_width = 'col-6 col-md-4 col-lg-3' -%}
+  {% when '5' %}
+    {%- assign grid_item_width = 'col-6 col-md-4 col-lg-3 col5' -%}
+  {% when '6' %}
+    {%- assign grid_item_width = 'col-6 col-md-4 col-lg-3 col-xl-2' -%}
+{% endcase %}
+
+
+<div class="new-arrivals-product" id="new-arrivals-{{block.id}}" data-new-arrivals-product>
+    <div class="{% if block.settings.layout == 'default' %}container{% elsif block.settings.layout == 'padd_60' %}container-padd60{% else %}container-fluid{% endif %}">
+        {% if block.settings.new_arrivals_title != blank %}
+        <div class="widget-title{% if block.settings.title_style == 'style_2' %} not-before{% endif %}">   
+            <h3 class="box-title">
+                <span class="title"> 
+                {% render 'multilang' with block.settings.new_arrivals_title %}
+                </span>
+            </h3>
+            {% if block.settings.new_arrivals_des != blank %}
+            <p>
+                {% render 'multilang' with block.settings.new_arrivals_des %}
+
+                {% if block.settings.view_all != blank %}
+                <a class="view_all" href="{{ block.settings.link_view_all }}" title="{{block.settings.view_all}}">
+                    {% render 'multilang' with block.settings.view_all %}
+                </a>
+                {% endif %}  
+
+            </p>        
+            {% endif %}
+        </div>
+        {% endif %}
+        
+        <div class="widget-product">
+            <div class="products-grid row column-{{block.settings.collection_results_per_row1}}" data-products-to-show="{{ block.settings.product_list_limit_all | plus:0 }}">        
+                {% assign product_limitation = 0 %}
+                {% if block.settings.display_infinite_scrolling_homepage %}
+                {% assign product_limitation = block.settings.product_list_limit_all | plus: 0 %}
+                {% endif %}
+                
+                {% for product in collections[block.settings.product_list_collection].products limit:block.settings.product_list_limit_all %}
+            
+                <div class="grid-item {{ grid_item_width }}{% if settings.product_image_border %} grid-item-border{% endif %} ">
+                {% if settings.style_product_grid == 'style_product_grid_2' %}
+                    {% render 'product-grid-item-style-2' with product as product, serial: forloop.index %}
+                {% elsif settings.style_product_grid == 'style_product_grid_3' %}
+                    {% render 'product-grid-item-style-3' with product as product, serial: forloop.index %}
+                {% else %}
+                    {% render 'product-grid-item' with product as product, serial: forloop.index %}
+                {% endif %}
+                </div>
+            
+                {% else %}
+                
+                {% for product in (1..block.settings.product_list_limit_all) %}
+                <div class="grid-item {{ grid_item_width }}">
+                <div class="grid-view-item no-product">
+                    <div class="product-top">
+                    <div class="not_img">
+                        Product Img
+                    </div>
+                    </div>
+                    
+                    <div class="product-bottom">
+                    <div class="product-title">
+                        <span>
+                        Your product's name
+                        </span>
+                    </div>
+                    
+                    <div class="price-box">
+                        <span> $250.00 </span>
+                    </div>
+                    </div>
+                </div>
+                </div>
+                {% endfor %}
+                {% endfor %}
+            </div>
+            
+            {% if block.settings.display_infinite_scrolling_homepage and collections[block.settings.product_list_collection].handle != '' %}      
+            {% assign collection = collections[block.settings.product_list_collection] %} 
+            {%- assign product_limit = product_limit | default: block.settings.product_list_limit_all -%}
+            {% if collections[block.settings.product_list_collection].all_products_count > product_limit %}
+            <div class="infinite-scrolling-homepage">
+                <a class="btn btn--secondary-accent btn--big btn-product-show-more" data-collection="{{ collection.handle }}" data-limit="{{ product_limit }}" data-page="2" data-total="{{  }}" data-total-products="{{ collections[block.settings.product_list_collection].all_products_count }}" href="{{ paginate.next.url }}" {% if collection.all_products_count <= product_limit %}disabled="disabled"{% endif %}>
+                  {{ 'home_page.show_more' | t}}
+                </a>
+            </div>
+            {% endif %}
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<style>
+    {% assign margin_bottom =  block.settings.margin_bottom %} 
+    @media (max-width: 767px) {
+        #new-arrivals-{{ block.id }} {
+            margin-bottom: {{ block.settings.margin_bottom_mb }}px;
+        }
+    }
+
+    @media (min-width: 768px) and (max-width: 1199px) {
+        #new-arrivals-{{ block.id }} {
+            margin-bottom: {{ block.settings.margin_bottom_tab }}px;
+        }
+    }
+
+    @media (min-width: 1200px) {
+        #new-arrivals-{{ block.id }} {
+            margin-bottom: {{ margin_bottom }}px;
+        }
+    }   
+</style>

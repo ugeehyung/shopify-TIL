@@ -1,0 +1,12 @@
+<div class="cart-template">
+  <div class="container">
+  	{% section 'cart-template' %}  
+    
+    {% unless settings.layout_style == 'layout_style_fullwidth' %}
+    	{% section 'cart-best-sellers' %}
+    {% endunless %}
+  </div> 
+  {% if settings.layout_style == 'layout_style_fullwidth' %}
+    {% section 'cart-best-sellers' %}
+  {% endif %} 
+</div>

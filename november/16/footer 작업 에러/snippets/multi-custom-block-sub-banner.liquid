@@ -1,0 +1,151 @@
+{% if block.settings.display_sub_banner %}
+<div class="home-custom-block-sub-banner home-sub-banner sub-banner-8{% unless block.settings.display_padding %} no-padding{% endunless %}{% if block.settings.style_layout == 'style_2' %} style_2{% endif %}" id="custom-sub-banner-{{block.id}}">
+    <div class="{% if block.settings.layout == 'default' %}container{% elsif block.settings.layout == 'padd_60' %}container-padd60{% else %}container-fluid{% endif %}">
+        <div class="row">
+            {% if block.settings.title_banner != blank %}
+            <div class="col-12">
+                <div class="widget-title{% if block.settings.title_style == 'style_2' %} not-before{% endif %}">   
+                    <h3 class="box-title">
+                        <span class="title"> 
+                        {% render 'multilang' with block.settings.title_banner %}
+                        </span>
+                    </h3>   
+                    {% if block.settings.desc != blank %}
+                    <p>
+                        {% render 'multilang' with block.settings.desc %}
+                    </p>        
+                    {% endif %}   
+                </div>            
+            </div>
+            {% endif %}
+
+            {% for i in (1..8) %}
+
+            {% capture enable %}enable_{{ i }}{% endcapture %}
+            {% capture image %}image_{{ i }}{% endcapture %}
+            {% capture title %}title_{{ i }}{% endcapture %}
+            {% capture color_title %}color_title_{{ i }}{% endcapture %}
+            {% capture button %}button_{{ i }}{% endcapture %}
+            {% capture link %}link_{{ i }}{% endcapture %}
+            {% capture bg_button %}bg_button_{{ i }}{% endcapture %}
+            {% capture border_button %}border_button_{{ i }}{% endcapture %}
+            {% capture color_button %}color_button_{{ i }}{% endcapture %}
+
+            {% if block.settings[enable] %}
+            <div class="one_Image item col-12 col-sm-4 col-lg-3 two-blocks">
+                <div class="sub-banner banner-item animate-scale">
+                    <div class="img-box">
+                        <a href="{{ block.settings[link] }}" class="animate-scale1 adaptive_height" style="padding-top: {{ 1 | divided_by: block.settings[image].aspect_ratio | times: 100 }}%">
+                        {% if block.settings[image] != blank %}
+                        
+                        {%- assign img_url = block.settings[image] | img_url: 'original', crop: 'center' -%}
+
+                        <img data-src="{{ img_url }}" {% render 'lazyload' %}
+                             alt="{{ block.settings[image].alt | default: shop.name }}" itemprop="logo">
+
+                        {% else %}
+
+                        <div class="not_img">
+                            950 x 810px
+                        </div>   
+                        {% endif %}
+                        </a>
+                    </div>
+
+                    {% if block.settings[title] != blank %}
+                    <div class="content-box">
+                        <h3 class="banner-title" style="{% if block.settings[color_title] != blank %}color: {{ block.settings[color_title] }};{% endif %}">
+                            {% render 'multilang' with block.settings[title] %} 
+                            
+                            <span class="border-bt-hover" style="{% if block.settings[color_title] != blank %}background-color: {{ block.settings[color_title] }};{% endif %}"></span>
+                        </h3>
+                    </div>
+                    {% endif %}
+
+                    {% if block.settings[button] != blank %}
+                    <div class="action-link">
+                        <a href="{{ block.settings.link }}" class="btn btn-img-block"
+                            style="{% if block.settings[bg_button] != blank %}
+                                    background-color:{{ block.settings[bg_button] }};
+                                    {% endif %}
+                                    {% if block.settings[border_button] != blank %}
+                                    border-color:{{ block.settings[border_button] }};
+                                    {% endif %}
+                                    {% if block.settings[color_button] != blank %}
+                                    color:{{ block.settings[color_button] }};
+                                    {% endif %}">
+                            {% render 'multilang' with block.settings[button] %}
+                        </a>        
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            {% endif %}
+          
+            {% endfor %}
+
+
+        </div>
+
+        {% if block.settings.block_des != blank %}
+        <div class="row justify-content-center">
+            <div class="col-12">
+                {% if settings.enable_multilang and des contains '[lang2]' %}
+                <div class="des text-center">
+                    <div class="lang1">
+                        {{ block.settings.block_des }}
+                    </div>
+                    <div class="lang2">
+                        {{ block.settings.block_des }}
+                    </div>
+                </div>
+                {% else %}
+                <div class="des text-center">
+                    {{ block.settings.block_des }}
+                </div>
+                {% endif %}               
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<style>
+    {% assign font_size_title =  block.settings.font_size_title %}
+    {% assign margin_bottom =  block.settings.margin_bottom %}
+
+    @media (max-width: 767px) {
+        #custom-sub-banner-{{block.id}}  {
+            margin-bottom: {{ block.settings.margin_bottom_mb }}px;
+        }
+    }
+
+    @media (min-width: 768px) and (max-width: 1199px) {
+        #custom-sub-banner-{{block.id}}  {
+            margin-bottom: {{ block.settings.margin_bottom_tab }}px;
+        }
+    }
+  
+    @media (min-width: 1200px) {
+        #custom-sub-banner-{{block.id}} .banner-title {
+            font-size: {{ font_size_title }};
+        }
+        
+        #custom-sub-banner-{{block.id}} {
+            margin-bottom: {{ margin_bottom }}px;
+        }
+
+        {% unless block.settings.display_padding %}
+        #custom-sub-banner-{{block.id}} .one_Image .btn-img-block {
+            min-width: 190px;
+        }      
+        {% endunless %}
+    }	
+
+    {% unless block.settings.display_padding %}
+    #custom-sub-banner-{{block.id}} .two-blocks.one_Image {
+        margin-bottom: 0;
+    }
+    {% endunless%}
+</style>
+{% endif %}

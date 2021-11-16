@@ -1,0 +1,39 @@
+{% layout none %}
+{%- for tag in current_tags -%}
+    {%- if tag contains 'limit=' -%}
+        {%- assign limit = tag | remove: 'limit=' -%}        
+    {%- elsif tag contains 'layout=' -%}
+        {%- assign layout = tag | remove: 'layout=' -%}
+    {%- elsif tag contains 'grid=' -%}
+        {%- assign grid = tag | remove: 'grid=' -%}
+    {%- elsif tag contains 'sectionId=' -%}
+        {%- assign sectionId = tag | remove: 'sectionId=' -%}
+    {%- endif -%}
+{%- endfor -%}
+
+{% case grid %}
+  {% when '1' %}
+    {%- assign grid_item_width = 'col-12' -%}
+  {% when '2' %}
+    {%- assign grid_item_width = 'col-6' -%}
+  {% when '3' %}
+    {%- assign grid_item_width = 'col-6 col-md-4' -%}
+  {% when '4' %}
+    {%- assign grid_item_width = 'col-6 col-md-4 col-lg-3' -%}
+  {% when '5' %}
+    {%- assign grid_item_width = 'col-6 col-md-4 col-lg-3 col5' -%}
+  {% when '6' %}
+    {%- assign grid_item_width = 'col-6 col-md-4 col-lg-3 col-xl-2' -%}
+{% endcase %}
+
+{%- for product in collections[collection.handle].products limit: limit -%}
+    <div class="grid-item {{ grid_item_width }}{% if settings.product_image_border %} grid-item-border{% endif %}">
+        {% if settings.style_product_grid == 'style_product_grid_2' %}
+	        {%- render 'product-grid-item-style-2', product: product, sectionId: sectionId, serial: forloop.index -%}
+        {% elsif settings.style_product_grid == 'style_product_grid_3' %}
+          {%- render 'product-grid-item-style-3', product: product, sectionId: sectionId, serial: forloop.index -%}
+	      {% else %}
+	        {%- render 'product-grid-item', product: product, sectionId: sectionId, serial: forloop.index -%}
+	     {% endif %}
+    </div>
+{%- endfor -%}

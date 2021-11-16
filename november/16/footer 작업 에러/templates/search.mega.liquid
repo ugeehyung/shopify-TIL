@@ -1,0 +1,24 @@
+{% layout none %}
+
+{% if settings.header_layout == 'default' %}
+    {% section 'navigation' %}
+{% elsif settings.header_layout == 'parallax' %}
+    {% section 'header-parallax' %}
+{% elsif settings.header_layout == '02' %}
+    {% section 'navigation' %}
+{% elsif settings.header_layout == '03' %}
+    {% section 'navigation' %}
+{% elsif settings.header_layout == '04' %}
+    {% section 'header-04' %}
+{% elsif settings.header_layout == '05' %}
+    {% section 'navigation-05' %}
+{% elsif settings.header_layout == '06' %}
+    {% section 'navigation-06' %}
+{% elsif settings.header_layout == '07' %}
+    {% section 'navigation-07' %}
+{% elsif settings.header_layout == 'vertical' %}
+    {% section 'header-vertical' %}
+    {% section 'navigation-vertical-menu' %}
+{% elsif settings.header_layout == 'supermarket' %}
+    {% section 'navigation-supermarket' %}
+{% endif %}

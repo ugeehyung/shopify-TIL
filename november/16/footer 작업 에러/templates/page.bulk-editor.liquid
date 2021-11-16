@@ -1,0 +1,345 @@
+<div class="bulk-page">
+  <div class="container">
+    {% render 'breadcrumb' %}
+    
+    <header class="page-header">
+      <h2>
+        {% render 'multilang' with page.title %}
+      </h2>  
+    </header>
+
+    <h5>Edit metafield in products.</h5>
+    <div class="content-bulk">
+      <div class="sidebar-content col-sidebar">
+        <div class="selectors-bulk">
+            <a href="javascript:void(0)" class="pr-active" data-value="" aria-describedby="a11y-external-message">Choose Category</a>
+            <svg viewBox="0 0 551.13 551.13" class="icon icon-chevron-down" id="icon-chevron-down">
+                <path d="m275.565 361.679-223.897-223.896h-51.668l275.565 275.565 275.565-275.565h-51.668z"></path>
+            </svg>
+            <ul>
+                <li><a class="pr-item all-products" href="javascript:void(0)" data-title="All Products" data-href="&ids={% for product in category.products %}{{ product.id }}%2C{% endfor %}">All Products</a></li>
+                {% for category in collections %}
+                  <li>
+                      <a class="pr-item" href="javascript:void(0)" data-title="{{ category.title }}" 
+                      data-href="&ids={% for product in category.products %}{{ product.id }}%2C{% endfor %}">
+                          {% render 'multilang' with category.title %}
+                      </a>
+                       <!--  <a class="pr-item" href="https://new-ella-demo-09.myshopify.com/admin/bulk?resource_name=Product&edit=metafields.c_f.Product+Video%3Astring%2Cmetafields.c_f.countdown%3Astring%2Cmetafields.c_f.custom+tab1%3Astring%2Cmetafields.c_f.custom+tab2%3Astring%2Cmetafields.c_f.custom+tab3%3Astring%2Cmetafields.c_f.custom+tab4%3Astring%2Cmetafields.c_f.custom+tab5&ids={% for product in category.products %}{{ product.id }}%2C{% endfor %}">
+                          {% render 'multilang' with category.title %}
+                        </a> -->
+                  </li>
+                {% endfor %}
+            </ul>
+        </div>
+      </div>
+      <div class="wrapper-content col-main">
+        <div class="content-item">
+          <input id="short_description" type="checkbox" name="" value="metafields.c_f.Short Description" checked>
+          <label for="short_description">Short Description</label>
+        </div>
+        <div class="content-item">
+          <input id="countdown" type="checkbox" name="" value="metafields.c_f.countdown" checked>
+          <label for="countdown">Countdown</label>
+        </div>
+        <div class="content-item">
+          <input id="sizechart" type="checkbox" name="" value="metafields.c_f.Size Chart" checked>
+          <label for="sizechart">Size Chart</label>
+        </div>
+        <div class="content-item">
+          <input id="lookbookdescription" type="checkbox" name="" value="metafields.c_f.Lookbook Description" checked>
+          <label for="lookbookdescription">Lookbook Description</label>
+        </div>
+        <div class="content-item">
+          <input id="bundlediscountrate" type="checkbox" name="" value="metafields.c_f.Bundle Discount Rate" checked>
+          <label for="bundlediscountrate">Bundle Discount Rate</label>
+        </div>
+        <div class="content-item">
+          <input id="groupedsubproduct" type="checkbox" name="" value="metafields.c_f.Grouped Sub Product" checked>
+          <label for="groupedsubproduct">Grouped Sub Product</label>
+        </div>
+        <div class="content-item">
+          <input id="custom_tab1" type="checkbox" name="" value="metafields.c_f.custom tab1" checked>
+          <label for="custom_tab1">Custom Tab1</label>
+        </div>
+        <div class="content-item">
+          <input id="custom_tab2" type="checkbox" name="" value="metafields.c_f.custom tab2" checked>
+          <label for="custom_tab2">Custom Tab2</label>
+        </div>
+        <div class="content-item">
+          <input id="custom_tab3" type="checkbox" name="" value="metafields.c_f.custom tab3" checked>
+          <label for="custom_tab3">Custom Tab3</label>
+        </div>
+        <div class="content-item">
+          <input id="custom_tab4" type="checkbox" name="" value="metafields.c_f.custom tab4" checked>
+          <label for="custom_tab4">Custom Tab4</label>
+        </div>
+        <div class="content-item">
+          <input id="custom_tab5" type="checkbox" name="" value="metafields.c_f.custom tab5" checked>
+          <label for="custom_tab5">Custom Tab5</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="content-btn">
+      <a class="btn submit_link" href="" target="_blank" >Submit Editor</a>
+    </div>
+  </div>
+</div>
+
+
+<script>
+  $( document ).ready(function() {
+   
+    $('.pr-active').on('click', function(){
+      $('.selectors-bulk').toggleClass('open');
+    });
+
+    $('.pr-item').on('click', function(){
+        var data_href = $(this).data('href');
+        var data_title = $(this).data('title');
+
+        $('.selectors-bulk').find('.pr-active').text(data_title);
+        $('.pr-item').removeClass('active');
+        $(this).addClass('active');
+        $('.selectors-bulk').removeClass('open');
+    });
+
+
+    $(document).on('click', function(e) {
+      if ($(e.target).closest('.selectors-bulk').length === 0) {
+          $('.selectors-bulk').removeClass('open');
+      }
+    });
+
+    var arrEditor = [];
+    $('.content-item label').on('click', function(){
+          var active_check = $(this).val();
+          var data_href = $(this).data('href');
+          var character = arrEditor.join(':string,');
+          var data_href_link = $('.submit_link').attr('href');
+
+          arrEditor.push(active_check);
+          data_href_link.replace('edit=', 'edit=' + character);
+    });
+
+    $('.submit_link').on('click', function(e){
+      e.preventDefault();
+      var arrEditor = [];
+      var data_href = $('.submit_link').attr('href');
+      if($('input:checked').length == 0){
+          alert('Please choose metafields');
+      } else {
+        $('input[type=checkbox]').each(function(){
+          if (this.checked) {
+            var active_check = $(this).val();
+            arrEditor.push(active_check);
+          }
+        });
+
+        var character = arrEditor.join(':string,');
+        var id_product = '';
+
+        $(this).attr('href', '/admin/bulk?resource_name=Product&edit=' + character);
+
+        if ($('.pr-item').hasClass('active')) {
+          id_product = '&ids=' + $('.pr-item.active').data('href');
+        }
+
+        if($('.all-products').hasClass('active')){
+          id_product = '';
+        }
+
+        var final_link = '/admin/bulk?resource_name=Product&edit=' + character + id_product;
+        window.open(final_link, '_blank');
+
+      }
+    }); 
+});
+</script>
+
+<style>
+  .content-bulk {
+      display: -webkit-box;
+      display: -ms-flexbox;
+      display: flex;
+      -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+  }
+
+  .sidebar-content {
+    padding-right: 40px;
+  }
+
+  .wrapper-content {
+    display: inline-block;
+    margin-top: 5px;
+  }
+
+  .wrapper-content .content-item { 
+    display: inline-block;
+    width: 20%;
+    float: left;
+    padding-bottom: 20px;
+  }
+
+  .content-item label {
+    margin: 0;
+    font-size: 13px;
+    display: inline-block;
+    font-weight: 500;
+    color: #232323;
+  }
+
+  .selectors-bulk {
+    position: relative;
+    display: block;
+    text-align: left;
+    border-bottom: 1px solid #787878;
+  }
+
+  .selectors-bulk .pr-active {
+    position: relative;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    cursor: pointer;
+    height: auto;
+    max-width: 100%;
+    width: 100%;
+    line-height: 30px;
+    max-height: 40px;
+    background-clip: unset;
+    display: inline-block;
+    vertical-align: top;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 0 25px 0 0;
+    text-transform: capitalize;
+    color: #232323;
+  }
+
+  .selectors-bulk.open ul { 
+    opacity: 1;
+    max-height: 250px;
+    padding: 10px;
+    height: inherit;
+  }
+
+  .selectors-bulk ul {
+    padding: 0;
+    list-style: none;
+    text-align: left;
+    position: absolute;
+    width: 100%;
+    top: calc(100% - 1px);
+    margin-bottom: 0;
+    background-color: #fff;
+    border: 1px solid #cbcbcb;
+    overflow: auto;
+    height: 0;
+    opacity: 0;
+    transition: all 0.3s ease;
+    font-size: 13px;
+    z-index: 10;
+  }
+
+  .selectors-bulk svg {
+    z-index: 2;
+    top: 50%;
+    right: 0;
+    bottom: 0;
+    width: 12px;
+    height: 12px;
+    pointer-events: none;
+    position: absolute;
+    fill: #787878;
+    color: #787878;
+    transform: translateY(-50%);
+  }
+
+  .selectors-bulk ul li a {
+    color: #232323;
+  }
+
+  .wrapper-content input[type="checkbox"] {
+    display: none;
+  }
+
+  .content-btn {
+    text-align: center;
+    padding-top: 30px;
+  }
+
+  .content-btn .submit_link {
+    border: 1px solid;
+    background: #fff;
+    color: #232323;
+    border-color: #232323;
+    padding: 8px 15px 6px;
+    min-width: 150px;
+  }
+
+  .content-btn .submit_link:hover {
+    background: #232323;
+    color: #fff;
+    border-color: #232323;
+  }
+
+  input[type=checkbox] {
+    position: relative;
+    cursor: pointer;
+  }
+  input[type=checkbox]:before {
+    content: "";
+    display: block;
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    top: 0;
+    left: 0;
+    border: 1px solid #555555;
+    border-radius: 0;
+    background-color: white;
+  }
+  input[type=checkbox]:checked:after {
+    content: "";
+    display: block;
+    width: 5px;
+    height: 10px;
+    border: solid black;
+    border-width: 0 2px 2px 0;
+    -webkit-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    transform: rotate(45deg);
+    position: absolute;
+    top: 2px;
+    left: 6px;
+  }
+
+  @media (max-width: 1024px) {
+    .wrapper-content {
+      margin-top: 30px;
+      width: 100%;
+    }
+
+    .wrapper-content .content-item {
+      width: 25%;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .wrapper-content {
+      margin-top: 25px;
+    }
+
+    .wrapper-content .content-item {
+      padding-bottom: 15px;
+    }
+  }
+
+  @media (max-width: 551px) {
+    .wrapper-content .content-item {
+        width: 50%;
+    }
+  }
+
+</style>

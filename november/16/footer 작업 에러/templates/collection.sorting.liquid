@@ -1,0 +1,23 @@
+{% layout none %}
+{%- for tag in current_tags -%}
+    {%- if tag contains 'limit=' -%}
+        {%- assign limit = tag | remove: 'limit=' -%}        
+    {%- elsif tag contains 'page=' -%}
+        {%- assign page = tag | remove: 'page=' -%}        
+    {%- endif -%}
+{%- endfor -%}
+{%- assign end = limit | times: page -%}
+{%- assign start = end | minus: limit | plus: 1 -%}
+{%- for product in collections[collection.handle].products limit: end -%}
+    {%- if forloop.index >= start -%}
+    <div class="grid-item col-6 col-md-4 col-lg-3 col5{% if settings.product_image_border %} grid-item-border{% endif %} ">
+        {% if settings.style_product_grid == 'style_product_grid_2' %}
+          {% render 'product-grid-item-style-2' with product as product, serial: forloop.index %}
+        {% elsif settings.style_product_grid == 'style_product_grid_3' %}
+          {% render 'product-grid-item-style-3' with product as product, serial: forloop.index %}
+        {% else %}
+          {% render 'product-grid-item' with product as product, serial: forloop.index %}
+        {% endif %}
+    </div>
+    {%- endif -%}
+{%- endfor -%}

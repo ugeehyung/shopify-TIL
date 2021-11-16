@@ -1,0 +1,135 @@
+{% layout none %}
+<div class="cart-edit" data-template-cart-edit>
+    {%- assign current_variant = product.selected_or_first_available_variant -%}
+    {% assign variantCount = product.variants | size %}
+    <h5>{{ 'cart.general.edit_options' | t }}</h5>
+    {% form 'product', product, id: "add-to-cart-edit-cart-form", novalidate: 'novalidate' %}
+    <div class="product-edit first hidden" data-cart-edit-id="{{ product.id }}" data-product-handle="{{ product.handle }}">
+      <input type="hidden" name="id" value="{{ current_variant.id }}" />
+      <input type="hidden" id="quantity" name="quantity" value="0">
+    </div>
+    <div class="product-edit" id="product-edit" data-cart-edit-id="{{ product.id }}" data-product-handle="{{ product.handle }}">
+      <div class="cart-meta">
+        {%- liquid 
+          if current_variant.image
+            assign src = current_variant.image | product_img_url: '200x'
+          else
+            assign src = product.featured_image.src | product_img_url: '200x'
+          endif
+        -%}
+        <img id="product-featured-image" src="{{ src }}" alt="{{ media.alt | escape }}">
+        <div class="cart-meta--title">
+          <h3 class="product-title">
+            {% render 'multilang' with product.title %}
+          </h3>
+          <div class="option">
+            {{current_variant.title}}
+          </div>
+          <div class="prices">
+            <span class="compare-price old-price">
+                {% if current_variant.compare_at_price %}
+                {{ current_variant.compare_at_price | money }}
+                {% endif %}
+            </span>
+            <span class="price new-price" itemprop="price">
+                {{ current_variant.price | money }}
+            </span>
+          </div>
+          <h3 class="quantity_title">{{ 'cart.label.quantity' | t }}:</h3>
+          <input type="number" id="quantity" name="quantity" value="1" {% if current_variant.inventory_management != null and current_variant.inventory_quantity > 0 %} data-line="{{ current_variant.inventory_quantity }}"{% endif %}>
+          <span class="error-message-input"></span>
+        </div>
+      </div>
+
+      <div class="cart-meta--option">
+          {% if product.available %}
+          <div id="product-variants">
+              {% if variantCount > 0  and product.variants[0].title != 'Default Title'  %}
+              <select id="product-selectors-cart-edit" name="id" style="display: none;">
+                  {% for variant in product.variants %}
+                  {% if variant.available %}
+                  <option data-imge="{% if variant.image.size != blank %}{{ variant.image.src | product_img_url: 'compact' }}{% else  %}{{ product.featured_image.src | product_img_url: 'compact' }}{% endif %}" {% if variant == current_variant %} selected="selected" {% endif %} value="{{ variant.id }}">
+                      {{ variant.title }}
+                  </option>
+                  {% else %}
+                  <option disabled="disabled">{{ variant.title }} - {{ 'products.product.sold_out' | t }}</option>
+                  {% endif %}
+                  {% endfor %}
+              </select>
+
+              {% if settings.use_color_swatch %}
+              {% for option in product.options %}
+              {% render 'swatch-edit-cart' with option %}
+              {% endfor %}
+              {% endif %}
+              {% else %}
+              <input type="hidden" name="id" value="{{ product.variants[0].id }}" />
+              {% endif %}
+          </div>
+          {% endif %}
+          <div class="edit-cart--remove">
+            <a data-remove-cart>{{ 'general.edit_cart.remove' | t }}</a>
+          </div>
+      </div>
+    </div>
+    <div class="cart-meta--action">
+      <a data-addmore><span>{{ 'general.edit_cart.add_more' | t }}</span></a>
+      <input data-update-cart-edit type="submit" name="add" class="btn" data-form-id="#add-to-cart-quickview-form" id="product-add-to-cart" value="{{ 'products.product.add_to_cart' | t }}">
+    </div>
+    {% endform %}
+    <div class="get_script_content" data-array_json='[{% for variant in product.variants %}{"id":"{{variant.id}}","value":"{{variant.inventory_quantity}}"}{% unless forloop.last %},{% endunless %}{% endfor %}]'>
+      
+    </div>
+</div>
+
+{% unless product == empty %}
+
+<script>
+    var selectCallbackCart = function(variant, selector) {
+        var addToCartBtn = $('#product-add-to-cart'),
+            productPrice = $('.product .price'),
+            comparePrice = $('.product .compare-price');
+        if(variant) {
+            // Prices
+            productPrice.html(Shopify.formatMoney(variant.price, "{{ shop.money_format }}"));
+            if(variant.compare_at_price > variant.price) {
+                comparePrice
+                    .html(Shopify.formatMoney(variant.compare_at_price, "{{ shop.money_format }}"))
+                    .show();
+                $('.new-price').addClass('special-price');
+            }
+            else {
+                comparePrice.hide();
+                $('.new-price').removeClass('special-price');
+            };
+
+            {% if settings.enable_multiple_currencies %}
+                Currency.convertAll(window.shop_currency, $('#currencies .active').attr('data-currency'), 'span.money', 'money_format');
+            {% endif %}
+            var form = $('#' + selector.domIdPrefix).closest('form');
+            
+            for (var i=0,length=variant.options.length; i<length; i++) {
+                var radioButton = form.find('.swatch[data-option-index="' + i + '"] :radio[value="' + variant.options[i] +'"]');
+                
+                if (radioButton.size()) {
+                    radioButton.get(0).checked = true;
+                }
+            };
+        }
+    };
+
+    $(function($) {
+        {% if product.available and product.variants.size > 0 %}
+        new Shopify.OptionSelectors('product-selectors-cart-edit', {
+            product: {{ product | json }},
+            onVariantSelected: selectCallbackCart,
+            enableHistoryState: false
+        });
+        {% endif %}
+        Shopify.linkOptionSelectors({{ product | json }}, '.product-edit', true);
+        window._json = {{ product | json }};
+        window.productVariants = window.productVariants || {};
+        window.productVariants[{{ product.id }}] = {{ product.variants | json }};
+    });
+</script>
+{% endunless %}

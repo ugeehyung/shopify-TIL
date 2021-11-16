@@ -1,0 +1,258 @@
+<div class="loading-modal modal"><div></div><div></div><div></div><div></div></div>
+
+<div class="ajax-lookbook-modal">
+    <div class="overlay"></div>
+    <div class="ajax-modal-content">
+        <a href="javascript:void(0)" data-close-lookbook-modal class="close close-modal">
+        {% render 'icon-close' %}
+        </a>
+        <div class="lookbook-content"></div>
+    </div>  
+</div>
+
+<div class="ajax-error-modal modal">
+    <div class="modal-inner">
+        <div class="ajax-error-message"></div>
+    </div>
+</div>
+
+<div class="{% if settings.ajax_popup_cart == 'normal' %}ajax-success-normal {% endif %}ajax-success-modal halo-modal" data-ajax-cart-success>
+    <div class="modal-overlay">
+        <div class="halo-modal-content">
+            <a class="close close-modal" title="{{ 'cart.ajax_cart.close' | t }}">
+                {% render 'icon-close' %}
+            </a>
+            
+            <div class="halo-modal-body">
+                {% if settings.ajax_popup_cart == 'upsell' %}
+                <div class="cart-popup-content"></div>
+                <div class="cart-popup-coll-related"></div> 
+
+                {% elsif settings.ajax_popup_cart == 'normal' %}
+                <div class="cart-modal-content">
+                    <div class="ajax-left">
+                        <img class="ajax-product-image" alt="&nbsp;" src="" style="max-width:64px;"/>
+                    </div>
+
+                    <div class="ajax-right">
+                        <div class="ajax-product-title"></div>
+                        <p class="success-message message-added-cart" {% if settings.enable_multilang %}data-translate="cart.ajax_cart.success_text"{% endif %}>
+                            {{ 'cart.ajax_cart.success_text' | t }}
+                        </p>  
+                        <div class="actions">
+                            <button class="btn continue-shopping" onclick="javascript:void(0)" {% if settings.enable_multilang %}data-translate="cart.ajax_cart.continue_shopping"{% endif %}>{{ 'cart.ajax_cart.continue_shopping' | t }}</button>
+                            <button class="btn btn-go-to-cart" onclick="window.location='{{ routes.cart_url }}'" {% if settings.enable_multilang %}data-translate="cart.ajax_cart.go_to_cart"{% endif %}>{{ 'cart.ajax_cart.go_to_cart' | t }}</button>
+                        </div>   
+                    </div>
+                </div> 
+                {% endif %}
+            </div>
+        </div>     
+  </div>
+</div>
+
+{% if settings.enable_quick_view %}
+<div class="ajax-success-modal halo-modal ajax-quickview" data-quickview-modal>
+    <div class="modal-overlay">
+        <div class="halo-modal-content">
+            <a class="close close-modal" title="{{ 'cart.ajax_cart.close' | t }}">
+                {% render 'icon-close' %}
+            </a>
+            
+            <div class="halo-modal-body"></div>
+        </div>     
+    </div>
+</div>
+{% endif %}
+
+<div class="newsletter-success-modal">
+    <div class="modal-overlay"></div>
+    <div class="halo-modal-content">
+      <a class="close close-modal" title="{{ 'cart.ajax_cart.close' | t }}">
+        {% render 'icon-close' %}
+      </a>
+
+      <div class="halo-modal-body success">
+        <i class="fa fa-check" aria-hidden="true"></i>
+        <span>{{settings.newssletter_success_text}}</span>
+      </div>
+      <div class="halo-modal-body error">
+        <i class="fa fa-times"></i>
+        <span>{{settings.newssletter_error_text}}</span>
+      </div>
+    </div> 
+</div>
+
+{% if settings.enable_before_you_leave %}
+    <div class="popup-sidebar popup-sidebar--right{% unless settings.enable_before_you_leave_mb %} before-you-leave__wrapper--disableMobile{% endunless %}" id="before-you-leave">
+        <div class="popup-sidebar__wrapper">
+            {% render 'before-you-leave' %}
+        </div>
+    </div>
+{% endif %}
+
+<div class="halo-modal ajax-editcart" data-cart-edit-modal>
+    <div class="modal-overlay">
+        <div class="halo-modal-content">
+            <a class="close close-modal" title="{{ 'cart.ajax_cart.close' | t }}">
+                <span>{{ 'cart.ajax_cart.close' | t }}</span>
+                {% render 'icon-close' %}
+            </a>
+            <div class="halo-modal-body"></div>
+        </div>     
+    </div>
+</div>
+
+{% if settings.enable_compare_product %}
+<div class="ajax-success-modal halo-modal ajax-compare" data-compare-modal>
+    <div class="modal-overlay">
+        <div class="halo-modal-content">
+            <a href="javascript:void(0)" class="close close-modal" title="{{ 'cart.ajax_cart.close' | t }}">
+                {% render 'icon-close' %}
+            </a>
+            <div class="halo-modal-header">
+                <span class="text">{{ 'compare.general.title' | t }}</span>
+                <a href="javascript:void(0)" class="remove-all" title="{{ 'compare.general.remove_all' | t }}" data-compare-remove-all>
+                    {{ 'compare.general.remove_all' | t }}
+                </a>
+            </div>
+            <div class="halo-modal-body">
+                <div class="compare-modal-wrapper">
+                    <div class="product-row row t-product">
+                        <div class="compare-header col-6 col-md-2 col-lg-2">{{ 'compare.general.product' | t }}</div>
+                        <div class="compare-content col-6 col-md-10 col-lg-10">
+                            <div class="product-grid grid"></div>
+                        </div>
+                    </div>
+
+                    {% if settings.enable_compare_rating %}
+                    <div class="product-row row t-rating">
+                        <div class="compare-header col-6 col-md-2 col-lg-2">{{ 'compare.general.review' | t }}</div>
+                        <div class="compare-content col-6 col-md-10 col-lg-10">
+                            <div class="rating grid">
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    {% if settings.enable_compare_description %}
+                    <div class="product-row row t-description">
+                        <div class="compare-header col-6 col-md-2 col-lg-2">{{ 'compare.general.description' | t }}</div>
+                        <div class="compare-content col-6 col-md-10 col-lg-10">
+                            <div class="description grid"></div>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    {% if settings.enable_compare_availability %}
+                    <div class="product-row row t-availability">
+                        <div class="compare-header col-6 col-md-2 col-lg-2">{{ 'compare.general.availability' | t }}</div>
+                        <div class="compare-content col-6 col-md-10 col-lg-10">
+                            <div class="availability grid"></div>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    {% if settings.enable_compare_product_type %}
+                    <div class="product-row row t-product-type">
+                        <div class="compare-header col-6 col-md-2 col-lg-2">{{ 'compare.general.product_type' | t }}</div>
+                        <div class="compare-content col-6 col-md-10 col-lg-10">
+                            <div class="product-type grid"></div>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    {% if settings.enable_compare_sku %}
+                    <div class="product-row row t-product-sku">
+                        <div class="compare-header col-6 col-md-2 col-lg-2">{{ 'compare.general.sku' | t }}</div>
+                        <div class="compare-content col-6 col-md-10 col-lg-10">
+                            <div class="product-sku grid"></div>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    {% if settings.show_compare_size %}
+                    <div class="product-row row t-product-size">
+                        <div class="compare-header col-6 col-md-2 col-lg-2">{{ 'compare.general.size' | t }}</div>
+                        <div class="compare-content col-6 col-md-10 col-lg-10">
+                            <div class="option1 grid"></div>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    {% if settings.show_compare_color %}
+                    <div class="product-row row t-product-color">
+                        <div class="compare-header col-6 col-md-2 col-lg-2">{{ 'compare.general.color' | t }}</div>
+                        <div class="compare-content col-6 col-md-10 col-lg-10">
+                            <div class="option2 grid"></div>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    {% if settings.show_compare_option %}
+                    <div class="product-row row t-product-option">
+                        <div class="compare-header col-6 col-md-2 col-lg-2">{{ 'compare.general.option' | t }}</div>
+                        <div class="compare-content col-6 col-md-10 col-lg-10">
+                            <div class="option3 grid"></div>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>     
+    </div>
+</div>
+<div class="compare-message-modal halo-modal" data-compare-message-modal>
+    <div class="modal-overlay">
+         <div class="halo-modal-content">
+            <a class="close close-modal" title="{{ 'cart.ajax_cart.close' | t }}">
+                {% render 'icon-close' %}
+            </a>
+            <div class="halo-modal-body"></div>
+         </div>
+    </div>
+</div>
+{% endif %}
+
+{% if settings.enable_checkbox and settings.terms_conditions_content != blank %}
+<div class="modal fade halo_modal halo_modal-custom modal_ters_conditions" id="terms_condition_modal">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">{{ settings.terms_conditions_text_link }}</h2>
+                <a data-dismiss="modal" class="close close-modal" title="{{ 'cart.ajax_cart.close' | t }}" tabindex>
+                    {% render 'icon-close' %}
+                </a>
+            </div>
+            <div class="modal-body">
+                {{ settings.terms_conditions_content }}
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<div class="halo-modal popup--video" data-popup-video>
+    <div class="modal-overlay">
+        <div class="halo-modal-content">
+            <a class="close close-modal" title="{{ 'cart.ajax_cart.close' | t }}">
+                {% render 'icon-close' %}
+            </a>
+            <div class="halo-modal-body">
+                
+            </div>
+        </div>     
+    </div>
+</div>
+
+{% if settings.enable_notify_form %}
+<div class="modal fade halo_modal-custom" id="notify-soldout">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <a data-dismiss="modal" class="close close-modal" title="{{ 'cart.ajax_cart.close' | t }}" href="javascript:void(0)">{% render 'icon-close' %}</a>
+            <div class="modal-body"> 
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}

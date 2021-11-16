@@ -1,0 +1,99 @@
+{%- liquid
+  assign on_sale = false
+  if product.compare_at_price_min > product.price_min
+    assign on_sale = true
+  endif
+  assign sold_out = true
+  if product.available
+    assign sold_out = false
+  endif
+  assign option_color_swatch = settings.option_color_swatch | downcase
+  assign url = ''
+  for option in product.options_with_values
+      assign option_name = option.name | downcase
+      if option_color_swatch contains option_name
+          assign product_option = option
+          assign index = forloop.index0
+          assign position = forloop.index | minus: 1
+          assign select = option.selected_value
+          for variant in product.variants limit: 1
+            if variant.image != null  
+              assign url = variant.image.src
+            endif
+          endfor
+          break
+      else 
+          assign position = 0
+      endif
+  endfor
+  if sectionId == blank 
+    assign sectionId = section.id
+  endif
+-%}
+
+<div class="inner product-item{% if sold_out %} sold-out{% endif %}{% if on_sale %} on-sale{% endif %}" data-product-id="product-{{ product.id }}" data-json-product='{"id": {{product.id}},"handle": "{{product.handle}}","media": {{product.media | json}},"variants": {{ product.variants | json }}}'>
+  <div class="inner-top">
+    <div class="product-top">
+      <div class="product-image{% if product.images.size > 1 and settings.image_swap %} image-swap{% endif %}">
+        <a href="{{ product.url | within: collection }}" class="product-grid-image adaptive_height" data-collections-related="{{ routes.collections_url }}/{{collection.handle}}?view=related" {% unless settings.product_image_resize %}style="padding-top: {{ 1 | divided_by: product.featured_image.aspect_ratio | times: 100 }}%"{% endunless %}>
+          {% render 'image-size', product: product, img: url %}
+        </a>
+      </div>
+    </div>
+
+    {% comment %} Use for productGrid {% endcomment %}
+    <div class="product-bottom">
+
+      <div class="wrapper-vendor">
+        {% if settings.show_vendor %}
+          <div class="product-vendor">
+            {{ product.vendor | link_to_vendor }}
+          </div>
+        {% endif %}
+        {% if settings.layout_style == 'layout_style_1170' %}
+          {% render 'wishlist-product' with product as product %}
+        {% endif %}
+      </div>
+      
+      <a class="product-title" href="{{ product.url | within: collection }}">
+        {% render 'multilang' with product.title %}
+      </a>
+
+      <div class="price-box">
+        {% if on_sale %}
+        <div class="price-sale">
+          {% if settings.enable_quick_shop %}
+            <span class="old-price" data-compare-price-grid>{{ product.variants[0].compare_at_price | money }}</span>
+            <span class="special-price" data-price-grid>{{ product.variants[0].price | money }}</span>
+          {% else %}
+            <span class="old-price" >{{ product.compare_at_price_min | money }}</span>
+            <span class="special-price">
+              {% if product.price_varies %}{% render 'varies_from' %}{% endif %}{{ product.price_min | money }}
+            </span>
+          {% endif %}
+        </div>
+        {% else %}
+          {% if settings.enable_quick_shop %}
+          <div class="price-regular">
+            <span data-price-grid>{{ product.variants[0].price | money }}</span>
+          </div>
+          {% else %}
+          <div class="price-regular">
+            <span>{% if product.price_varies %}{% render 'varies_from' %}{% endif %}{{ product.price_min | money }}</span>
+          </div>
+          {% endif %}
+        {% endif %}
+      </div>
+
+      {% if settings.display_item_swatch %}
+        {% render 'item-swatch', product: product, option_color_swatch: option_color_swatch, downcased_option: option_name, product_option: product_option, index: index %}
+      {% endif %}
+
+      {% if settings.display_product_reviews %}
+        <span class="shopify-product-reviews-badge" data-id="{{ product.id }}" style="min-height: 20px; display: block; margin-bottom: 9px;"></span>
+      {% endif %}
+    </div>
+
+    
+  </div>
+</div>

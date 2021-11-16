@@ -1,0 +1,106 @@
+<div class="store-availability-container">
+  {%- assign pick_up_availabilities = product_variant.store_availabilities | where: 'pick_up_enabled', true -%}
+  {%- if pick_up_availabilities.size > 0 -%}
+    <div class="store-availability-information">
+      {%- assign closest_location = pick_up_availabilities.first -%}
+        {%- if closest_location.available -%}
+          <svg xmlns="http://www.w3.org/2000/svg" focusable="false" aria-hidden="true" viewBox="0 0 512 512"><path fill="currentColor" d="M173.898 439.404l-166.4-166.4c-9.997-9.997-9.997-26.206 0-36.204l36.203-36.204c9.997-9.998 26.207-9.998 36.204 0L192 312.69 432.095 72.596c9.997-9.997 26.207-9.997 36.204 0l36.203 36.204c9.997 9.997 9.997 26.206 0 36.204l-294.4 294.401c-9.998 9.997-26.207 9.997-36.204-.001z"></path></svg>
+          {%- else -%} 
+          <svg class="icon-out-of-stock" viewBox="0 0 512 512"><path d="M443.6,387.1L312.4,255.4l131.5-130c5.4-5.4,5.4-14.2,0-19.6l-37.4-37.6c-2.6-2.6-6.1-4-9.8-4c-3.7,0-7.2,1.5-9.8,4  L256,197.8L124.9,68.3c-2.6-2.6-6.1-4-9.8-4c-3.7,0-7.2,1.5-9.8,4L68,105.9c-5.4,5.4-5.4,14.2,0,19.6l131.5,130L68.4,387.1  c-2.6,2.6-4.1,6.1-4.1,9.8c0,3.7,1.4,7.2,4.1,9.8l37.4,37.6c2.7,2.7,6.2,4.1,9.8,4.1c3.5,0,7.1-1.3,9.8-4.1L256,313.1l130.7,131.1  c2.7,2.7,6.2,4.1,9.8,4.1c3.5,0,7.1-1.3,9.8-4.1l37.4-37.6c2.6-2.6,4.1-6.1,4.1-9.8C447.7,393.2,446.2,389.7,443.6,387.1z"/></svg>
+        {%- endif -%}
+        <div class="store-availability-information-container">
+          {%- if closest_location.available -%}
+            <p class="store-availability-information__title">
+              {{ 'store_availability.general.pick_up_available_at_html' | t: location_name: closest_location.location.name }}
+            </p>
+            <p class="store-availability-information__stock store-availability-small-text">
+              {{ closest_location.pick_up_time }}
+            </p>
+            <a class="store-availability-information__button js-modal-open-store-availability-modal store-availability-small-text" data-store-availability-modal-open aria-haspopup="dialog">
+              {%- if pick_up_availabilities.size == 1 -%}
+                {{ 'store_availability.general.view_store_info' | t }}
+              {%- else -%}
+                {{ 'store_availability.general.check_other_stores' | t }}
+              {%- endif -%}
+            </a>
+          {%- else -%}
+            <p class="store-availability-information__title">
+              {{ 'store_availability.general.pick_up_unavailable_at_html' | t: location_name: closest_location.location.name }}
+            </p>
+            {%- if pick_up_availabilities.size > 1 -%}
+              <a class="store-availability-information__button js-modal-open-store-availability-modal store-availability-small-text" data-store-availability-modal-open aria-haspopup="dialog">
+                {{ 'store_availability.general.check_other_stores' | t }}
+              </a>
+            {%- endif -%}
+        {%- endif -%}
+        </div>
+
+    </div>
+    <div
+      class="store-availabilities-modal"
+      id="StoreAvailabilityModal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="StoreAvailabilitiesModalProductTitle"
+    >
+      <div class="store-availabilities-modal__header">
+        <div class="store-availabilities-modal__product-information">
+          <h2
+            id="StoreAvailabilitiesModalProductTitle"
+            class="store-availabilities-modal__product-title"
+            data-store-availability-modal-product-title
+          >
+          {{ product.title }}
+          </h2>
+          <p
+            class="store-availabilities-modal__variant-title store-availability-small-text"
+            data-store-availability-modal-variant-title
+          >
+            {{ product_variant.title }}
+          </p>
+        </div>
+        <button
+          type="button"
+          class="store-availabilities-modal__close js-modal-close-store-availability-modal text-link"
+          aria-label="{{ 'general.accessibility.close_modal' | t }}"
+        >
+          {% render 'icon-close' %}
+        </button>
+      </div>
+      <ul class="store-availabilities-list" role="list">
+        {%- for availability in pick_up_availabilities -%}
+          <li class="store-availability-list__item">
+            <h3 class="store-availability-list__location">
+              {{availability.location.name}}
+            </h3>
+            <div class="store-availability-list__stock store-availability-small-text">
+              {%- if availability.available -%}
+                <svg xmlns="http://www.w3.org/2000/svg" focusable="false" aria-hidden="true" viewBox="0 0 512 512"><path fill="currentColor" d="M173.898 439.404l-166.4-166.4c-9.997-9.997-9.997-26.206 0-36.204l36.203-36.204c9.997-9.998 26.207-9.998 36.204 0L192 312.69 432.095 72.596c9.997-9.997 26.207-9.997 36.204 0l36.203 36.204c9.997 9.997 9.997 26.206 0 36.204l-294.4 294.401c-9.998 9.997-26.207 9.997-36.204-.001z"></path></svg>
+                {{ 'store_availability.general.pick_up_available' | t }}, {{ availability.pick_up_time | downcase }}
+              {%- else -%}
+                <svg class="icon-out-of-stock" viewBox="0 0 512 512"><path d="M443.6,387.1L312.4,255.4l131.5-130c5.4-5.4,5.4-14.2,0-19.6l-37.4-37.6c-2.6-2.6-6.1-4-9.8-4c-3.7,0-7.2,1.5-9.8,4  L256,197.8L124.9,68.3c-2.6-2.6-6.1-4-9.8-4c-3.7,0-7.2,1.5-9.8,4L68,105.9c-5.4,5.4-5.4,14.2,0,19.6l131.5,130L68.4,387.1  c-2.6,2.6-4.1,6.1-4.1,9.8c0,3.7,1.4,7.2,4.1,9.8l37.4,37.6c2.7,2.7,6.2,4.1,9.8,4.1c3.5,0,7.1-1.3,9.8-4.1L256,313.1l130.7,131.1  c2.7,2.7,6.2,4.1,9.8,4.1c3.5,0,7.1-1.3,9.8-4.1l37.4-37.6c2.6-2.6,4.1-6.1,4.1-9.8C447.7,393.2,446.2,389.7,443.6,387.1z"/></svg>
+                {{ 'store_availability.general.pick_up_currently_unavailable' | t }}
+              {%- endif -%}
+            </div>
+            {%- assign address = availability.location.address -%}
+            <address class="store-availability-list__address">
+              {{ address | format_address }}
+            </address>
+            {%- if address.phone.size > 0 -%}
+              <p class="store-availability-list__phone store-availability-small-text">
+                {{ address.phone }}<br>
+              </p>
+            {%- endif -%}
+          </li>
+        {%- endfor -%}
+      </ul>
+    </div>
+  {%- endif -%}
+</div>
+
+{% schema %}
+{
+  "name": {},
+  "settings": []
+}
+{% endschema %}

@@ -1,0 +1,152 @@
+<section class="policies-block" id="home-policies-{{ block.id }}" data-loader-script="{{ 'halo.slide-policies.js' | asset_url }}">
+  <div class="{% if block.settings.layout == 'default' %}container{% elsif block.settings.layout == 'full' %}container-fluid{% else %}container-padd60{% endif %}">
+    <div class="bg-policies-block">
+      <div class="row policies-slider" data-policies-slider data-row="1">  
+        {%- assign column_size = 'col-12' -%}    
+        {% for i in (1..4) %}
+            {% capture enable %}enable_{{ i }}{% endcapture %}
+            {% capture icon %}icon_{{ i }}{% endcapture %}
+            {% capture text %}text_{{ i }}{% endcapture %}
+            {% capture text_des %}text_des_{{ i }}{% endcapture %}
+            {% capture link %}link_{{ i }}{% endcapture %}
+
+            {% if block.settings[enable] %}
+            <div class="policy-item {{ column_size }}">
+              <a href="{{ block.settings[link] }}" title="">
+                {% if block.settings[icon] != blank %}
+                <span class="policy-icon">
+                  {{ block.settings[icon] }}
+                </span>
+                {% endif %}
+                <span class="policy-text">
+                  {% render 'multilang' with block.settings[text] %}
+                    <p>
+                        {% render 'multilang' with block.settings[text_des] %}
+                    </p>   
+                </span>
+              </a>
+            </div>
+            {% endif %}
+        
+        {% endfor %}
+      </div>
+    </div>    
+  </div>
+</section>
+
+<style>
+    {% if block.settings.text_des != blank %}
+        #home-policies-{{ block.id }} {
+            padding-top: 44px;
+        }
+        .policies-block .policy-text{
+            text-align: left;
+            
+        }
+        .policies-block .policy-text > span{
+            font-weight: 500;
+            font-size: 16px;
+            text-transform: none;
+        }
+        .policies-block .policy-icon{
+            font-size: 50px;
+            margin-right: 25px;
+        }
+        .policies-block .policy-text:before{
+            content: none;
+        }
+        .policies-block .policy-text{
+            letter-spacing: .02em;
+            position: relative;
+            top: 4px;
+        }
+        .policies-block .policy-text p{
+            text-transform: none;
+            letter-spacing: .02em;
+            font-weight: 400;
+        }
+    {% endif %}
+    @media (max-width: 767px) {
+        #home-policies-{{ block.id }} {
+            margin-bottom: {{ block.settings.margin_bottom_mb }}px;
+        }
+    }
+
+    @media (min-width: 768px) and (max-width: 1199px) {
+        #home-policies-{{ block.id }} {
+            margin-bottom: {{ block.settings.margin_bottom_tab }}px;
+            background-color: {{ block.settings.bg_color_block }};
+        }
+    }
+
+    @media (min-width: 1200px) {
+        #home-policies-{{ block.id }} {
+            margin-bottom: {{ block.settings.margin_bottom }}px;
+        }
+    }
+
+    {% unless block.settings.display_padding %}
+     #home-policies-{{ block.id }} .bg-policies-block {
+        background-color: {{ block.settings.bg_color }};
+     }
+    {% endunless %}
+    
+    {% unless settings.layout_style == 'layout_style_fullwidth' %}
+        #home-policies-{{ block.id }} {
+            background-color: {{ block.settings.bg_color_block }};
+        }
+
+        #home-policies-{{ block.id }} {
+            border-top: 1px solid {{ block.settings.border_block }};      
+        }
+    {% endunless %}
+
+    {% if settings.layout_style == 'layout_style_fullwidth' %}
+        #home-policies-{{ block.id }} .bg-policies-block {
+            background-color: {{ block.settings.bg_color_block }};
+        }
+    {% endif %}
+    
+    #home-policies-{{ block.id }} .policy-item a {
+        border: 1px solid {{ block.settings.border }};
+        background-color: {{ block.settings.bg_color }};
+        color: {{ block.settings.color }};
+    } 
+
+    #home-policies-{{ block.id }} .policy-item a span i {
+        color: {{ block.settings.color_icon }};
+    }
+
+    #home-policies-{{ block.id }} .policy-text p {
+        color: {{ block.settings.color_des }};
+    }
+
+    #home-policies-{{ block.id }} .policy-text:before {
+        {% if settings.layout_style == 'layout_style_fullwidth' %}
+            background-color: none;
+        {% else %}
+            background-color: {{ block.settings.color }};
+        {% endif %}
+    }
+
+    #home-policies-{{ block.id }} .policy-item .policy-text:before {
+        display: none;
+    }
+
+    #home-policies-{{ block.id }} .bg-policies-block .slick-arrow svg {
+        color: {{ block.settings.color }};
+        width: 14px;
+        height: 14px;
+    }
+</style>
+<script>
+  $(document).ready(function(){
+    setTimeout(function(){ 
+      $('#home-policies-{{ block.id }} .slick-slide').each(function() {
+        var maxHeight = $(this).outerHeight();
+          $('.bg-policies-block .policies-slider.slick-slider .policy-item').css('min-height',maxHeight);
+      });
+    }, 2000);
+    
+  });
+</script>

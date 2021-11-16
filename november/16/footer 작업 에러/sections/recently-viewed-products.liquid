@@ -1,0 +1,717 @@
+{% if section.settings.display_recently_viewed_products %} 
+{{ '//ajax.aspnetcdn.com/ajax/jquery.templates/beta1/jquery.tmpl.min.js' | script_tag }}
+{{ 'jquery.products.min.js' | asset_url | script_tag }}
+{{ 'slick.min.js' | asset_url | script_tag }}
+
+<section class="recently-viewed-products" style="display: none;">
+  {% if section.settings.recently_viewed_products_title != '' %}
+  <div class="widget-title not-before">   
+    <h3 class="box-title">
+      <span class="title"> 
+        {% render 'multilang' with section.settings.recently_viewed_products_title %}
+      </span>
+    </h3>
+  </div>
+  {% endif %}
+  
+  {% if settings.category_layout == 'full_with' or template.suffix == 'fullwidth' %}
+  {%- assign class = 'six-items' -%}
+  {%- assign rows = '6' -%}
+  
+  {% else %}
+  {%- assign class = 'five-items' -%}
+  {%- assign rows = '5' -%}
+  {% endif %}
+  
+  <div class="widget-product">
+    <div class="products-grid row {{ class }}" data-rows="{{ rows }}" id="recently-viewed-products-grid"></div>
+  </div>
+</section>
+
+  {% raw %}
+  <script id="recently-viewed-product-grid-template" type="text/x-jquery-tmpl">
+  {% endraw %}
+  ${( file = featured_image.split("/products", 1) ),''}
+  ${( option_color_swatch = window.swatch_recently), ''}
+  ${( product_id = id ),''}
+  <div class="grid-item col-6 col-md-4 col-lg-3 col5 {% if settings.product_image_border %}grid-item-border{% endif %}">
+    <div class="inner product-item{% raw %}{{if !available}} sold-out {{/if}}{{if compare_at_price_min > price_min}} on-sale{{/if}}" data-product-id="product-${id}">
+      <div class="inner-top">
+      <div class="product-top">
+                <div class="product-image {% endraw %}{% if settings.image_swap %}{% raw %}{{if images[1] != null}}image-swap{{/if}}{% endraw %}{% endif %}{% raw %}">
+                  <a href="${url}" class="product-grid-image" data-collections-related="/collections/${collection}?view=related">
+                      {{if featured_image != null}}
+                        {% endraw %}{% if settings.image_swap %}{% raw %}
+                        {{if images[1] != null}}
+                        <picture data-index="0">
+                          <img src="${featured_image}" class="images-one" alt="${featured_image.alt}" data-index="0" />
+                        </picture>
+                        <span class="images-two">
+                          <picture data-index="1">
+                            <img src="${images[1]}" alt="${images[1].alt}" data-index="1" />
+                          </picture>
+                        </span>
+                        {{else}}
+                        <picture data-index="0">
+                          <img src="${featured_image}" alt="${featured_image.alt}" data-index="0" />
+                        </picture>
+                        {{/if}}
+                        {% endraw %}{% else %}{% raw %}
+                        <picture data-index="0">
+                          <img src="${featured_image}" alt="${featured_image.alt}" data-index="0" />
+                        </picture>
+                        {% endraw %}{% endif %}{% raw %}
+                      {{/if}}
+                  </a>
+                </div>
+                
+                <div class="product-label">
+                  {{if compare_at_price_min > price_min }} 
+                  {% endraw %}
+                  {% if settings.type_label_sale == 'label_sale' %}
+                  {% raw %}
+                    <strong class="label sale-label">
+                      <span {% endraw %}{% if settings.enable_multilang %}data-translate="products.product.sale"{% endif %}>
+                          {{ 'products.product.sale' | t }}{% raw %}
+                      </span>
+                    </strong>
+                    {% endraw %}
+                    {% else %}
+                    {% raw %}
+                    ${( compare = 0 ),''}
+                    {{each variants}}
+                      {{if variants[($index)].compare_at_price > variants[($index)].price}}
+                        ${( saving = Math.round((variants[($index)].compare_at_price - variants[($index)].price)*100/variants[($index)].compare_at_price) ),''}
+                        {{if saving > compare}}
+                          ${( compare = saving ),''}
+                        {{/if}}
+                      {{/if}}
+                    {{/each}}
+                    {{if compare < 1}}
+                      ${( compare = Math.round((compare_at_price_min - price_min)*100/compare_at_price_min) ),''}
+                    {{/if}}
+                    <strong class="label sale-label">
+                      <span>
+                          -${compare}%
+                      </span>
+                    </strong>
+                    {% endraw %}
+                    {% endif %}
+                    <br>
+                    {% raw %}
+                    
+                  {{/if}}
+                  {{if !available}}
+                    <strong class="label sold-out-label">
+                      <span {% endraw %}{% if settings.enable_multilang %}data-translate="products.product.sold_out"{% endif %}>
+                        {{ 'products.product.sold_out' | t }}{% raw %}
+                      </span>
+                    </strong>
+                    <br>
+                  {{/if}}
+                  
+                  ${( tagLabel = false ),''}
+                   {{if tags}}
+                      {{each tags}} 
+                          {{if $value =="label" || $value =="Label"}}
+                              ${( tagLabel = true ),''}
+                          {{/if}}
+                       {{/each}}
+                   {{/if}}
+                   
+                   {{if tagLabel}}
+                    <strong class="label custom-label">
+                      <span {% endraw %}{% if settings.enable_multilang %}data-translate="products.product.custom_label"{% endif %}>
+                        {{ 'products.product.custom_label' | t }}{% raw %}
+                      </span>
+                    </strong>
+                  {{/if}}
+                </div>
+                
+                <div class="product-des abs-center">
+                    {% endraw %}
+                    {% if settings.enable_wishlist %}
+                    {% raw %}
+                    <a class="wishlist" data-icon-wishlist href="#" data-product-handle="${handle}" data-id="${id}">
+                          {% endraw %}
+                          {% render 'icon-heart-2' %}
+                          {% raw %}
+                    </a>
+                    {% endraw %}
+                    {% endif %} 
+                    {% raw %}
+                    
+                    {% endraw %}
+                    {% if settings.display_button %}
+                    {% raw %}
+                    <div class="action">
+                        <form action="{% endraw %}{{ routes.cart_url }}{% raw %}/add" method="post" class="variants" id="recently-${id}" data-id="product-actions-${id}" enctype="multipart/form-data">
+                            {{if !available}}
+                                <button class="btn add-to-cart-btn" type="submit" disabled="disabled" {% endraw %}{% if settings.enable_multilang %}data-translate="products.product.unavailable"{% endif %}>
+                                    {{ 'products.product.unavailable' | t }}{% raw %}
+                                </button>
+                            {{else variants.length > 0 && variants[0].title != 'Default Title' }}
+                                ${( downcased_option = options[0].name.toLowerCase() ),''}
+                                {{if options.length == 1 && option_color_swatch.indexOf(downcased_option) > -1 && window.use_color_swatch}}
+                                  <input type="hidden" name="id" value="${variants[0].id}" />
+                                  <input type="hidden" name="quantity" value="1" />
+                                  <button data-btn-addToCart class="btn add-to-cart-btn" type="submit" data-form-id="#recently-${id}" {% endraw %}{% if settings.enable_multilang %}data-translate="products.product.add_to_cart"{% endif %}>
+                                  {{ 'products.product.add_to_cart' | t }}{% raw %}
+                                  </button>
+                                {{else}}
+                                  {% endraw %}
+                                  {% if settings.enable_quick_shop %}
+                                  {% raw %}
+                                    <a class="btn" data-href="javascript:void(0)" title="${title}" data-init-quickshop>
+                                      {% endraw %}{{ 'products.product.add_to_cart' | t }}{% raw %}
+                                    </a>
+                                  {% endraw %}
+                                  {% else %}
+                                  {% raw %}
+                                    <a class="btn" href='${url}' title='${title}' {% endraw %}{% if settings.enable_multilang %}data-translate="products.product.select_options"{% endif %}>
+                                    {{ 'products.product.select_options' | t }}{% raw %}
+                                    </a>
+                                  {% endraw %}
+                                  {% endif %}
+                                  {% raw %}
+                                {{/if}}
+                            {{else}}
+                              <input type="hidden" name="id" value="${variants[0].id}" />      
+                              <button data-btn-addToCart class="btn add-to-cart-btn" type="submit" data-form-id="#recently-${id}" {% endraw %}{% if settings.enable_multilang %}data-translate="products.product.add_to_cart"{% endif %}>
+                              {{ 'products.product.add_to_cart' | t }}{% raw %}
+                              </button>
+                            {{/if}}
+                        </form>
+                        {{if available}}
+                        {{if variants.length > 0 && variants[0].title != 'Default Title'}}
+                          <div class="product-card__variant--popup">
+                              <div class="product-card__variant--popup--content">
+                                <form action="{% endraw %}{{ routes.cart_url }}{% raw %}/add" method="post" class="variants" id="recently-${id}-qs" data-id="product-actions-${id}" enctype="multipart/form-data">
+                                  {{each options}}
+                                    ${( option_name = name.toLowerCase() ),''}
+                                    {{if option_color_swatch.indexOf(option_name) > -1}}
+                                      ${( position_color = position - 1 ),''}
+                                    {{else}}
+                                      ${( position_color = 0 ),''}
+                                    {{/if}}
+                                  {{/each}}
+
+                                  {{each options}}
+                                      ${( option_name = name.toLowerCase() ),''}
+                                      ${( colorlist = '' ),''}
+                                      {{if window.use_color_swatch }}
+                                          {{if option_color_swatch.indexOf(option_name) > -1}}
+                                              <div class="selector-wrapper selector-wrapper-1 swatch js product-form__item option-color hide" data-option-index=0 data-option-position="${position - 1}">
+                                                  <label class="form-label">
+                                                      ${name}: 
+                                                      <span class="label-value-${position}"></span>
+                                                  </label>
+                                                  ${( option_index = position ),''}
+                                                  {{each variants}}
+                                                    {{if position == 1}}
+                                                    ${( value = variants[($index)].option1 ),''}
+                                                    {{/if}}
+                                                    {{if position == 2}}
+                                                    ${( value = variants[($index)].option2 ),''}
+                                                    {{/if}}
+                                                    {{if position == 3}}
+                                                    ${( value = variants[($index)].option3 ),''}
+                                                    {{/if}}
+                                                    ${( temp = ''),''}
+                                                    ${( temp = temp.concat(";",value) ),''}
+                                                    {{if colorlist.indexOf(value) < 0}}
+                                                      ${( colorlist = colorlist.concat(";",value) ),''}
+                                                      ${( value_2 = value.toLowerCase().replace(" ", "") ),''}
+                                                      <div class="swatch-element color ${value_2}{{if available}} available{{else}} soldout{{/if}}" data-value="${value}">
+                                                          <input {{if !available}}disabled{{/if}} class="single-option-selector single-option-selector-quick single-option-selector-recently-view" type="radio" name="SingleOptionSelector-${option_index}-${product_id}-recently-view" data-index="option${option_index}" value="${value}" {{if values[0] == value}}checked="checked"{{/if}} id="SingleOptionSelector${option_index}-${value}-${product_id}-recently-view">
+                                                          <label data-toggle="tooltip" data-placement="top" title="${value}" for="SingleOptionSelector${option_index}-${value}-${product_id}-recently-view"></label>
+                                                      </div>
+                                                    {{/if}}
+                                                  {{/each}}
+                                              </div>
+                                          {{else}}
+                                              <div class="selector-wrapper selector-wrapper-{{if position_color == 0 }}${position}{{else}}{{if position == 1 }}2{{else}}3{{/if}}{{/if}} swatch js product-form__item" data-option-index={{if position_color == 0 }}${position - 1}{{else}}{{if position == 1}}1{{else}}2{{/if}}{{/if}}>
+                                                  <label class="form-label">
+                                                      ${name}: 
+                                                      <span class="label-value-${position}"></span>
+                                                  </label>
+                                                  ${( option_index = position ),''}
+                                                  {{each variants}}
+                                                    {{if position == 1}}
+                                                    ${( value = variants[($index)].option1 ),''}
+                                                    {{/if}}
+                                                    {{if position == 2}}
+                                                    ${( value = variants[($index)].option2 ),''}
+                                                    {{/if}}
+                                                    {{if position == 3}}
+                                                    ${( value = variants[($index)].option3 ),''}
+                                                    {{/if}}
+                                                    ${( temp = ''),''}
+                                                    ${( temp = temp.concat(";",value) ),''}
+                                                    {{if colorlist.indexOf(temp) < 0}}
+                                                        ${( colorlist = colorlist.concat(";",value) ),''}
+                                                        ${( value_2 = value.toLowerCase().replace(" ", "") ),''}
+                                                          <div class="swatch-element size ${value_2}{{if available}} available{{else}} soldout{{/if}}" data-value="${value}">
+                                                              <input {{if !available}}disabled{{/if}} class="single-option-selector single-option-selector-quick single-option-selector-recently-view" type="radio" name="SingleOptionSelector-${option_index}-${product_id}-recently-view" data-index="option${option_index}" value="${value}" id="SingleOptionSelector${option_index}-${value}-${product_id}-recently-view">
+                                                              <label data-toggle="tooltip" data-placement="top" title="${value}" for="SingleOptionSelector${option_index}-${value}-${product_id}-recently-view">${value}</label>
+                                                          </div>
+                                                      {{/if}}
+                                                  {{/each}}
+                                              </div>
+                                          {{/if}}
+                                      {{else}}
+                                        ${( position_color = position - 1 ),''}
+                                        ${( check = false ),''}
+                                        ${( select1 = ''),''}
+                                        ${( select2 = ''),''}
+                                        <div class="selector-wrapper selector-wrapper-${position} selector js product-form__item" data-option-index=${position}>
+                                            <label class="form-label">
+                                                ${name}: <span class="label-value-${position}"></span>
+                                            </label>
+                                            
+                                            <select class="single-option-selector single-option-selector-quick single-option-selector-recently-view product-form__input form-control" id="SingleOptionSelector-${position}-${product_id}-recently-view" data-option="option${position}" data-option-index="${position_color}">
+                                              {{each variants}}
+                                                {{if check == false}}
+                                                  {{if variants[($index)].available == true}}
+                                                    ${( select1 = variants[($index)].option1 ),''}
+                                                    ${( select2 = variants[($index)].option2 ),''}
+                                                    ${( check = true ),''}
+                                                  {{/if}}
+                                                {{/if}}
+                                                
+                                                {{if position == 1}}
+                                                ${( value = variants[($index)].option1 ),''}
+                                                {{/if}}
+                                                {{if position == 2}}
+                                                ${( value = variants[($index)].option2 ),''}
+                                                {{/if}}
+                                                {{if position == 3}}
+                                                ${( value = variants[($index)].option3 ),''}
+                                                {{/if}}
+                                                ${( temp = ''),''}
+                                                ${( temp = temp.concat(";",value) ),''}
+                                                {{if colorlist.indexOf(temp) < 0}}
+                                                  ${( colorlist = colorlist.concat(";",value) ),''}
+                                                  ${( value_2 = value.toLowerCase().replace(" ", "") ),''}
+                                                  <option value="${value}" {{if select1 == value || select2 == value}}selected="selected"{{/if}}>${value}</option>
+                                                {{/if}}
+                                              {{/each}}
+                                            </select>
+                                        </div>
+                                      {{/if}}
+                                  {{/each}}
+                                  <select name="id" id="ProductSelect-${id}-recently-view" class="product-form__variants no-js">
+                                      {{each variants}}
+                                          {{if available}}
+                                              <option value="${id}">
+                                                  ${title}
+                                              </option>
+                                          {{else}}
+                                              <option disabled="disabled">${title} - {% endraw %}{{ 'products.product.sold_out' | t }}{% raw %}</option>
+                                          {{/if}}
+                                      {{/each}}
+                                  </select>
+                                  <div class="product-card__button_cancel_mobile">
+                                      <a class="btn btn-cancel" data-cancel-swatch-qs><svg aria-hidden="true" data-prefix="fal" data-icon="times" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" class="svg-inline--fa fa-times fa-w-10 fa-2x"><path fill="currentColor" d="M193.94 256L296.5 153.44l21.15-21.15c3.12-3.12 3.12-8.19 0-11.31l-22.63-22.63c-3.12-3.12-8.19-3.12-11.31 0L160 222.06 36.29 98.34c-3.12-3.12-8.19-3.12-11.31 0L2.34 120.97c-3.12 3.12-3.12 8.19 0 11.31L126.06 256 2.34 379.71c-3.12 3.12-3.12 8.19 0 11.31l22.63 22.63c3.12 3.12 8.19 3.12 11.31 0L160 289.94 262.56 392.5l21.15 21.15c3.12 3.12 8.19 3.12 11.31 0l22.63-22.63c3.12-3.12 3.12-8.19 0-11.31L193.94 256z" class=""></path></svg></a>
+                                  </div>
+                                  <div class="product-card__button2">
+                                      <input type="hidden" name="quantity" value="1" />
+                                      <button data-btn-addToCart class="btn add-to-cart-btn" type="submit" data-form-id="#recently-${id}-qs">
+                                          {% endraw %}{{ 'products.general.submit' | t }}{% raw %}
+                                      </button>
+                                  </div>
+                                </form>
+                              </div>
+                          </div>
+                        {{/if}}
+                        {{/if}}
+                    </div>
+                    {% endraw %}
+                    {% endif %}
+                    {% raw %}
+                                                    
+                    {% endraw %}
+                    {% if settings.display_product_reviews %}
+                    {% raw %}
+                    <span class="shopify-product-reviews-badge" data-id="${id}"></span>
+                    {% endraw %}
+                    {% endif %}
+                    {% raw %}
+                </div>
+                
+                <div class="product-des abs-bottom">
+                {% endraw %}
+                {% if settings.enable_quick_view %}
+                {% raw %}
+                  <a class="quickview-button" href="javascript:void(0)" id="${handle}">
+                     <span {% endraw %}{% if settings.enable_multilang %}data-translate="products.product.quick_view"{% endif %}>
+                        {{ 'products.product.quick_view' | t }}{% raw %}
+                     </span>                        
+                  </a>
+                {% endraw %}
+                {% endif %}
+                {% raw %}
+                </div>
+        </div>
+            
+            <div class="product-bottom">
+              {% endraw %}
+              {% if settings.show_vendor %}
+              {% raw %}
+                <div class="product-vendor">
+                    <a href="{% endraw %}{{ routes.cart_url | split: '/cart' | first }}{% raw %}/collections/vendors?q=${vendor}" title="Anna">${vendor}</a>                
+                </div>
+              {% endraw %}
+              {% endif %} 
+              {% raw %}
+                
+              <a class="product-title change-text" href="${url}">
+                ${title}
+                {{each options}}
+                  ${( option_name = name.toLowerCase() ),''}
+                  {{if option_color_swatch.indexOf(option_name) > -1}}
+                    {{if position == 1}}
+                    ${( option = variants[0].option1 ),''}
+                    {{/if}}
+                    {{if position == 2}}
+                    ${( option = variants[0].option2 ),''}
+                    {{/if}}
+                    {{if position == 3}}
+                    ${( option = variants[0].option3 ),''}
+                    {{/if}}
+                    <span data-change-title> - ${option}</span>
+                  {{/if}}
+                {{/each}}
+              </a>
+                
+                <div class="price-box">
+                    {{if compare_at_price_min > price_min }} 
+                      <p class="sale">
+                        <span class="old-price">
+                          {{html Shopify.formatMoney(compare_at_price_min, window.money_format)}}
+                        </span>
+                        
+                        <span class="special-price">
+                          {{if price_varies}}
+                            {% endraw %}{% render 'varies_from' %}{% raw %}
+                          {{/if}}
+                            {{html Shopify.formatMoney(price_min, window.money_format)}}
+                        </span>
+                      </p>
+                    {{else}}
+                      <p class="regular-product">
+                        <span>
+                          {{if price_varies}}{% endraw %}{% render 'varies_from' %}{% raw %}{{/if}}
+                            {{html Shopify.formatMoney(price_min, window.money_format)}}
+                        </span>
+                      </p>
+                    {{/if}}
+                </div>  
+                {% endraw %}
+                {% if settings.display_item_swatch %}
+                {% raw %}
+
+                {{if window.use_color_swatch}}
+                
+                {{each options}}
+                
+                ${( downcased_option = name.toLowerCase() ),''}
+                
+                {{if option_color_swatch.indexOf(downcased_option) > -1}}
+                ${( colorlist = '' ),''}
+                ${( optionCount = 0 ),''}
+                ${( count = 0 ),''}
+                <ul class="item-swatch">
+                ${( val = 0 ),''}
+                {{each values}} 
+                ${( color = 0 ),''}
+                {{each variants}}
+                {{if position == 1}}
+                ${( color = variants[($index)].option1 ),''}
+                ${( valu = values.length - 1 ),''}
+                {{/if}}
+                {{if position == 2}}
+                ${( color = variants[($index)].option2 ),''}
+                ${( valu = values.length - 1 ),''}
+                {{/if}}
+                {{if position == 3}}
+                ${( color = variants[($index)].option3 ),''}
+                ${( valu = values.length - 1 ),''}
+                {{/if}}
+                ${( temp = ''),''}
+                ${( temp = temp.concat(";",color) ),''}
+                {{if colorlist.indexOf(temp) < 0}}
+                {{if count < 4}}
+                <li class="">
+                  <div class="tooltip">
+                      ${color}
+                  </div>
+                  <label {{if options.length == 1}}data-with-one-option="${id}" data-quantity="{{if available}}1{{else}}0{{/if}}"{{/if}} class="{{if count == 0}}active{{/if}} {{if options.length == 1 && !available}}soldout{{/if}}" data-value="${color.toLowerCase().replace(" ", "-")}" title="${color}"
+                      {{if variants[($index)].featured_image != null}}
+                      data-img="${variants[($index)].featured_image.src}"
+                      {{/if}}
+                      style="
+                      {% endraw %}{%- if settings.color_swatch_style == 'variant' or settings.color_swatch_style == 'variant_grouped'-%}{% raw %}
+                      
+                      {{if variants[($index)].featured_image != null}}
+                      {{else}}
+                        background-color: ${color};
+                      {{/if}}
+                      {% endraw %}
+                      {% else %}
+                        background-color: ${color};
+                        background-image: ${file + "/files/" + color.toLowerCase().replace(" ", "-") + ".png"};
+                      {% raw %}
+                      {% endraw %}
+                      {% endif %}
+                      {% raw %}
+                      ">
+                      {% endraw %}
+                      {% if settings.color_swatch_style =='variant' or settings.color_swatch_style == 'variant_grouped' %}
+                      {% raw %}
+                        {{if variants[($index)].featured_image != null}}
+                          <img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="
+                                       class="lazyload"
+                                       data-src="${variants[($index)].featured_image.src}"
+                                       data-widths="[180, 360, 540, 720, 900, 1080, 1296, 1512, 1728, 2048]"
+                                       data-aspectratio="${variants[($index)].featured_image.src}"
+                                       data-sizes="auto">
+                        {{/if}}
+                      {% endraw %}
+                      {% endif %}
+                      {% raw %}
+                    </label>
+                  
+                </li>
+                {{else}}
+                  
+                  ${( count1 = count ),''}
+                  ${( count2 = valu ),''}
+                    {{if count1 == 4}}
+                      <li class="group-swatch" style="display: none">
+                    {{/if}}
+                      <div>
+                        <div class="tooltip">
+                            ${color}
+                        </div>
+                        <label {{if options.length == 1}}data-with-one-option="${id}" data-quantity="{{if available}}1{{else}}0{{/if}}"{{/if}} class="{{if count == 0}}active{{/if}} {{if options.length == 1 && !available}}soldout{{/if}}" data-value="${color.toLowerCase().replace(" ", "-")}" title="${color}"
+                        {{if variants[($index)].featured_image != null}}
+                        data-img="${variants[($index)].featured_image.src}"
+                        {{/if}}
+                        style="
+                        {% endraw %}{%- if settings.color_swatch_style == 'variant' or settings.color_swatch_style == 'variant_grouped'-%}{% raw %}
+                        
+                        {{if variants[($index)].featured_image != null}}
+                        {{else}}
+                          background-color: ${color};
+                        {{/if}}
+                        {% endraw %}
+                        {% else %}
+                          background-color: ${color};
+                        {% raw %}
+                        {% endraw %}
+                        {% endif %}
+                        {% raw %}
+                        ">
+                        {% endraw %}
+                        {% if settings.color_swatch_style =='variant' or settings.color_swatch_style == 'variant_grouped' %}
+                        {% raw %}
+                          {{if variants[($index)].featured_image != null}}
+                            <img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="
+                                         class="lazyload"
+                                         data-src="${variants[($index)].featured_image.src}"
+                                         data-widths="[180, 360, 540, 720, 900, 1080, 1296, 1512, 1728, 2048]"
+                                         data-aspectratio="${variants[($index)].featured_image.src}"
+                                         data-sizes="auto">
+                          {{/if}}
+                        {% endraw %}
+                        {% endif %}
+                        {% raw %}
+                        </label>
+                      </div>
+                    {{if count == valu }}
+                      </li>
+                    {{/if}}
+
+                {{/if}}
+                ${( optionCount ++ ),''}
+                ${( count = optionCount / 4 ),''}
+
+
+                {{/if}}
+                ${( colorlist = colorlist.concat(";",color) ),''}
+                {{/each}}
+                {{/each}}
+                ${( count = optionCount / 4 ),''}
+
+                {{if count > 4}}
+                <li class="item-swatch-more">
+                  <a href="javascript:void(0)" title="More Color">
+                      <span>+</span> ${count - 4}
+                  </a>
+                </li>
+                {{/if}}
+                
+                </ul>
+                {{/if}}
+                {{/each}}
+
+                {{/if}}
+                {% endraw %}
+                {% endif %}
+                {% raw %}
+        </div>                        
+      </div>
+    </div>
+  </div>
+
+</script>
+{% endraw %}
+
+<script>
+    $('.recently-viewed-products').hide();
+
+    Shopify.Products.showRecentlyViewed({ 
+        howManyToShow: {{ section.settings.number_of_recently_viewed_products }},
+        wrapperId: 'recently-viewed-products-grid', 
+        templateId: 'recently-viewed-product-grid-template',
+        onComplete: function() {
+            var recentlyViewBlock = $('.recently-viewed-products');
+            var recentlyGrid = recentlyViewBlock.find('#recently-viewed-products-grid');
+            var productGrid = recentlyGrid.children();
+            var rows = recentlyGrid.data('rows');
+   
+            if(productGrid.length) {
+                recentlyViewBlock.show();
+
+                if(recentlyViewBlock.is(':visible')) {          
+                    {% if settings.enable_multilang %}
+                    if (translator.current_lang == 2)
+                    translator.doTranslate('.recently-viewed-products');
+                    {% endif %}
+                    
+                    if(!recentlyGrid.hasClass('slick-initialized')) {
+                    recentlyGrid.slick({
+                        infinite: true,
+                        speed: 1000,
+                        slidesToShow: rows,
+                        dots: false,
+                        slidesToScroll: rows,
+                        get nextArrow() {
+                            if ((window.layout_style == 'layout_style_1170') || (window.layout_style == 'layout_style_flower')) {
+                                return this.nextArrow = '<button type="button" class="slick-next"><svg viewBox="0 0 50 50"><path d="M 11.957031 13.988281 C 11.699219 14.003906 11.457031 14.117188 11.28125 14.308594 L 1.015625 25 L 11.28125 35.691406 C 11.527344 35.953125 11.894531 36.0625 12.242188 35.976563 C 12.589844 35.890625 12.867188 35.625 12.964844 35.28125 C 13.066406 34.933594 12.972656 34.5625 12.71875 34.308594 L 4.746094 26 L 48 26 C 48.359375 26.003906 48.695313 25.816406 48.878906 25.503906 C 49.058594 25.191406 49.058594 24.808594 48.878906 24.496094 C 48.695313 24.183594 48.359375 23.996094 48 24 L 4.746094 24 L 12.71875 15.691406 C 13.011719 15.398438 13.09375 14.957031 12.921875 14.582031 C 12.753906 14.203125 12.371094 13.96875 11.957031 13.988281 Z"></path></svg></button>';
+                            } else {
+                                return this.nextArrow = '<button type="button" class="slick-next"><i class="fa fa-angle-right"></i></button>';
+                            }
+                        },
+                        get prevArrow() {
+                            if ((window.layout_style == 'layout_style_1170') || (window.layout_style == 'layout_style_flower')) {
+                                return this.prevArrow = '<button type="button" class="slick-prev"><svg viewBox="0 0 50 50"><path d="M 11.957031 13.988281 C 11.699219 14.003906 11.457031 14.117188 11.28125 14.308594 L 1.015625 25 L 11.28125 35.691406 C 11.527344 35.953125 11.894531 36.0625 12.242188 35.976563 C 12.589844 35.890625 12.867188 35.625 12.964844 35.28125 C 13.066406 34.933594 12.972656 34.5625 12.71875 34.308594 L 4.746094 26 L 48 26 C 48.359375 26.003906 48.695313 25.816406 48.878906 25.503906 C 49.058594 25.191406 49.058594 24.808594 48.878906 24.496094 C 48.695313 24.183594 48.359375 23.996094 48 24 L 4.746094 24 L 12.71875 15.691406 C 13.011719 15.398438 13.09375 14.957031 12.921875 14.582031 C 12.753906 14.203125 12.371094 13.96875 11.957031 13.988281 Z"></path></svg></button>';
+                            } else {
+                                return this.prevArrow = '<button type="button" class="slick-prev"><i class="fa fa-angle-left"></i></button>';
+                            }
+                        },
+                        responsive: [
+                        {
+                            breakpoint: 1400,
+                            settings: {
+                                slidesToShow: 5,
+                                slidesToScroll: 5
+                            }
+                            },
+                            {
+                            breakpoint: 1200,
+                            settings: {
+                                slidesToShow: 4,
+                                slidesToScroll: 4,
+                                arrows:false,
+                                dots: true              
+                            }
+                            },
+                            {
+                            breakpoint: 992,
+                            settings: {
+                                slidesToShow: 3,
+                                slidesToScroll: 3,
+                                arrows:false,
+                                dots: true                
+                            }
+                            },
+                            {
+                            breakpoint: 768,
+                            settings: {
+                                slidesToShow: 2,
+                                slidesToScroll: 2,
+                                arrows:false,
+                                dots: true
+                            }
+                            }
+                        ]
+                        });
+                    };     
+
+                    if($('.spr-badge').length > 0) {
+                    return window.SPR.registerCallbacks(), window.SPR.initRatingHandler(), window.SPR.initDomEls(), window.SPR.loadProducts(), window.SPR.loadBadges();
+                    }; 
+        
+                    if(window.show_multiple_currencies && Currency.currentCurrency != shopCurrency){
+                      
+                      Currency.convertAll(window.shop_currency, $('#currencies .active').attr('data-currency'), '.recently-viewed-products span.money', 'money_format');
+                    }
+                }; 
+            }
+            
+            else {
+                recentlyViewBlock.hide();
+            };
+
+            var wishListItems = localStorage.getItem('items') ? JSON.parse(localStorage.getItem('items')) : [];
+
+            if (!wishListItems.length) {
+                return;
+            }
+
+            for (var i = 0; i < wishListItems.length; i++) {
+                var icon = $('[data-product-handle="'+ wishListItems[i] +'"]');
+                icon.addClass('whislist-added');
+                icon.find('.wishlist-text').text(window.inventory_text.remove_wishlist);
+            };
+        }
+    });
+</script>
+
+<script>
+    Shopify.Products.recordRecentlyViewed();
+</script>
+{% endif %}
+{% style %}
+  #shopify-section-recently-viewed-products{
+    width: 100%;
+  }
+{% endstyle %}
+{% schema %}
+  {
+    "name": "Recently Viewed Products",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "display_recently_viewed_products",
+        "label": "Display Recently Viewed Products?",
+        "default": true
+      },
+      {
+        "type": "text",
+        "id": "recently_viewed_products_title",
+        "label": "Title of recently viewed products",
+        "default": "Recently Viewed Products"
+      },
+      {
+        "type": "text",
+        "id": "number_of_recently_viewed_products",
+        "label": "Number of recently viewed products",
+        "default": "8"
+      }
+      
+    ]
+  }
+{% endschema %}

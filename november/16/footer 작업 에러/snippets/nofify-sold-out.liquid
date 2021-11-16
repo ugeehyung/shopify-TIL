@@ -1,0 +1,48 @@
+{% if settings.enable_notify_form %}
+<div id="nofify_sold-out" data-form-notify 
+    {% if current_variant.available %}
+        {% if product.available and variantCount > 0 %}style="display: none"{% endif %}
+    {% endif %}
+    {% if variantCount > 0 and product.variants[0].title != 'Default Title' %}
+        data-success="{{ 'products.notify_form.success_variant' | t }}"
+    {% else %}
+        data-success="{{ 'products.notify_form.success_product' | t }}"
+    {% endif %}
+        data-error="{{ 'products.notify_form.error' | t }}">
+    
+    <h4 class="title">{{ 'products.notify_form.title' | t }}</h4>
+    {% form 'contact', id: 'sold-out_form' %}
+        {% if form.posted_successfully? %}
+        {% if variantCount > 0 and product.variants[0].title != 'Default Title' %}
+            <div class="note form-success" style="display: none">
+                {{ 'products.notify_form.success_variant' | t }}
+            </div>
+        {% else %}
+            <div class="note form-success" style="display: none">
+                {{ 'products.notify_form.success_product' | t }}
+            </div>
+        {% endif %}
+        
+        <script>
+            $(document).ready(function(){
+                if ($.cookie('soldOut') == 'closed') {
+                    // $('#sold-out_form .form-success').show();
+                    var success = $('#nofify_sold-out').data('success');
+                    $('#notify-soldout .modal-body').html(success);
+                    $('#notify-soldout').modal();
+                    var newURL = location.href.split("?")[0];
+                    window.history.pushState('object', document.title, newURL);
+                }
+            });
+        </script>
+        {% endif %}
+        <div id="notify-me-wrapper" class="clearfix form-content">
+            <!-- <input type="hidden" class="form-input" name="contact[NOTIFY ME OUT OF STOCK]" /> -->
+            <input type="hidden" class="form-input" name="contact[Product Title]" value="{{ product.title }}" />
+            <input type="hidden" class="form-input" name="contact[Product Link]" value="{{ shop.url | append: current_variant.url }}" data-value-email />
+            <input type="email" name="contact[email]" required id="contactFormEmail" placeholder="{{ 'products.notify_form.placeholder' | t }}" class="form-input input-field" value="{{customer.email}}">
+            <input type="submit" class="button btn btn--secondary" id="soldOut-button" value="{{ 'products.notify_form.submit' | t }}">
+        </div>
+    {% endform %}
+</div>
+{% endif %}

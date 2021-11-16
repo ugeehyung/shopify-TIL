@@ -1,0 +1,101 @@
+<div class="product-card__variant--popup--content">
+    {% assign id_form = id | append: '-' | append: product.id %}
+    <form action="{{ routes.cart_url }}/add" method="post" class="variants" id="swatch-{{id_form}}-{{sectionId}}-{{list}}" data-id="product-actions-{{ product.id }}" enctype="multipart/form-data">
+        {% for option in product.options_with_values %}
+            {% assign option_name = option.name | downcase %}
+            {% assign option_color_swatch = settings.option_color_swatch | downcase %}
+            {% if settings.use_color_swatch %}
+                {% if option_color_swatch contains option_name %}
+                    <div class="selector-wrapper selector-wrapper-1 swatch js product-form__item option-color hide" data-option-index=0 data-option-position="{{forloop.index | minus: 1 }}">
+                        <label class="form-label {% if option.name == 'default' %}label--hidden{% endif %}">
+                            {{ option.name }}: <span class="label-value-{{ forloop.index }}">{{ option.selected_value }}</span>
+                        </label>
+                        {% assign option_index0 = forloop.index0 %}
+                        {% assign option_index = forloop.index %}
+                        {% assign values = '' %}
+                        {% for variant in product.variants %}
+                            {% assign value = variant.options[option_index0] %}
+                            {% unless values contains value %}
+                                {% assign values = values | join: ';' %}
+                                {% assign values = values | append: ';' | append: value %}
+                                {% assign values = values | split: ';' %}
+                                {% assign value_2 = value | remove: " " | downcase %}
+                                <div class="swatch-element color {{ value_2 }}{% if variant.available %} available{% else %} soldout{% endif %}" data-value="{{ value }}">
+                                    <input {% unless variant.available %}disabled{% endunless %} class="single-option-selector single-option-selector-quick single-option-selector-{{ sectionId }}" type="radio" name="SingleOptionSelector-{{ option_index0 }}-{{ product.id }}-{{ sectionId }}{{list}}" data-index="option{{ option_index }}" value="{{ value | escape }}" {% if option.selected_value == value %} checked="checked"{% endif %} id="SingleOptionSelector{{ option_index0 }}-{{ value }}-{{ product.id }}-{{ sectionId }}{{list}}">
+                                    <label data-toggle="tooltip" data-placement="top" title="{{ value }}" for="SingleOptionSelector{{ option_index0 }}-{{ value }}-{{ product.id }}-{{ sectionId }}{{list}}"{% if settings.show_product_variant_img %}{% if variant.image != blank %} data-imge="{{ variant.image.src | product_img_url: 'compact' }}"{% else %} style="background-color: {{ value_2 }}; background-image: url({{ value_2 | handle | append: '.png' | file_url }})"{% endif %}{% else %}{% if variant.image != blank %} data-imge="{{ variant.image.src | product_img_url: 'compact' }}"{% else %} style="background-color: {{ value_2 }};"{% endif %}{% endif %}>{% if variant.image != blank %}<img class="lazyload" data-srcset="{{ variant.image.src | img_url: '34x34' }}" alt="" data-image>{% endif %}</label>
+                                </div>
+                            {% endunless %}
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="selector-wrapper selector-wrapper-{% if position == 0 %}{{ forloop.index }}{% else %}{% if forloop.index == 1 %}2{% else %}3{% endif %}{% endif %} swatch js product-form__item" data-option-index={% if position == 0 %}{{ forloop.index | minus: 1 }}{% else %}{% if forloop.index == 1 %}1{% else %}2{% endif %}{% endif %}>
+                        <label class="form-label {% if option.name == 'default' %}label--hidden{% endif %}">
+                            {{ option.name }}: <span class="label-value-{{ forloop.index }}">{{ option.selected_value }}</span>
+                        </label>
+                        {% assign option_index0 = forloop.index0 %}
+                        {% assign option_index = forloop.index %}
+                        {% assign values = '' %}
+
+                        {% for variant in product.variants %}
+                            {% assign value = variant.options[option_index0] %}
+                            {% unless values contains value %}
+                                {% assign values = values | join: ';' %}
+                                {% assign values = values | append: ';' | append: value %}
+                                {% assign values = values | split: ';' %}
+                                {% assign value_2 = value | remove: " " | downcase %}
+                                <div class="swatch-element size {{ value_2 }}{% if variant.available %} available{% else %} soldout{% endif %}" data-value="{{ value }}">
+                                    <input {% unless variant.available %}disabled{% endunless %} class="single-option-selector single-option-selector-quick single-option-selector-{{ sectionId }}" type="radio" name="SingleOptionSelector-{{ option_index0 }}-{{ product.id }}-{{ sectionId }}{{list}}" data-index="option{{ option_index }}" value="{{ value | escape }}" id="SingleOptionSelector{{ option_index0 }}-{{ value }}-{{ product.id }}-{{ sectionId }}{{list}}">
+                                    <label data-toggle="tooltip" data-placement="top" title="{{ value }}" for="SingleOptionSelector{{ option_index0 }}-{{ value }}-{{ product.id }}-{{ sectionId }}{{list}}">{{ value }}</label>
+                                </div>
+                            {% endunless %}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% else %}
+                <div class="selector-wrapper selector-wrapper-{{forloop.index}} selector js product-form__item" data-option-index={{forloop.index}}>
+                    <label class="form-label {% if option.name == 'default' %}label--hidden{% endif %}">
+                        {{ option.name }}: <span class="label-value-{{ forloop.index }}">{{ option.selected_value }}</span>
+                    </label>
+                    <select class="single-option-selector single-option-selector-quick single-option-selector-{{ sectionId }} product-form__input form-control" id="SingleOptionSelector-{{ forloop.index0 }}-{{ product.id }}-{{ sectionId }}{{list}}" data-option="option{{ forloop.index }}" data-option-index="{{ forloop.index | minus: 1 }}">
+                        {% assign option_index0 = forloop.index0 %}
+                        {% assign option_index = forloop.index %}
+                        {% assign values = '' %}
+                        
+                        {% for variant in product.variants %}
+                            {% assign value = variant.options[option_index0] %}
+                            {% unless values contains value %}
+                                {% assign values = values | join: ';' %}
+                                {% assign values = values | append: ';' | append: value %}
+                                {% assign values = values | split: ';' %}
+                                <option value="{{ value }}"{% if option.selected_value == value %} selected="selected"{% endif %}>{{ value }}</option>
+                            {% endunless %}
+                        {% endfor %}
+                    </select>
+                </div>
+            {% endif %}
+        {% endfor %}
+
+        <select name="id" id="ProductSelect-{{ product.id }}-{{ sectionId }}{{list}}" class="product-form__variants no-js">
+            {% for variant in product.variants %}
+                {% if variant.available %}
+                    <option value="{{ variant.id }}">
+                        {{ variant.title }}
+                    </option>
+                {% else %}
+                    <option disabled="disabled">{{ variant.title }} - {{ 'products.product.sold_out' | t }}</option>
+                {% endif %}
+            {% endfor %}
+        </select>
+        <div class="product-card__button_cancel_mobile">
+            <a class="btn btn-cancel" data-cancel-swatch-qs><svg aria-hidden="true" data-prefix="fal" data-icon="times" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" class="svg-inline--fa fa-times fa-w-10 fa-2x"><path fill="currentColor" d="M193.94 256L296.5 153.44l21.15-21.15c3.12-3.12 3.12-8.19 0-11.31l-22.63-22.63c-3.12-3.12-8.19-3.12-11.31 0L160 222.06 36.29 98.34c-3.12-3.12-8.19-3.12-11.31 0L2.34 120.97c-3.12 3.12-3.12 8.19 0 11.31L126.06 256 2.34 379.71c-3.12 3.12-3.12 8.19 0 11.31l22.63 22.63c3.12 3.12 8.19 3.12 11.31 0L160 289.94 262.56 392.5l21.15 21.15c3.12 3.12 8.19 3.12 11.31 0l22.63-22.63c3.12-3.12 3.12-8.19 0-11.31L193.94 256z" class=""></path></svg></a>
+        </div>
+        <div class="product-card__button2">
+            <input type="hidden" name="quantity" value="1" />
+            <button data-btn-addToCart class="btn add-to-cart-btn" type="submit" data-form-id="#swatch-{{id_form}}-{{sectionId}}-{{list}}">
+                {{ 'products.general.submit' | t }}
+            </button>
+            <a class="btn btn-cancel" data-cancel-swatch-qs>{{ 'products.general.cancel' | t }}</a>
+        </div>
+        
+    </form>
+</div>

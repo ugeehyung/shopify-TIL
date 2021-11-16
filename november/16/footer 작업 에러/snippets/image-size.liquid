@@ -1,0 +1,78 @@
+{% if img != blank %}
+  {% assign image_first = img %}
+{% else %}
+  {% assign image_first = product.images[0].src %}
+{% endif %}
+{% if product.images.size > 1 and settings.image_swap %}
+  <picture data-index="0">
+    <source
+            data-srcset="{{ image_first | img_url: '300x' }}"
+            media="(max-width: 767px)" />
+    <source
+            data-srcset=" {{ image_first | img_url: '360x' }} 360w,
+                          {{ image_first | img_url: '540x' }} 540w,
+                          {{ image_first | img_url: '720x' }} 720w,
+                          {{ image_first | img_url: '900x' }} 900w"
+            media="(min-width: 768px)" />
+
+    <img alt="{{ product.images[0].alt | escape }}"
+       class="images-one lazyload"
+       data-widths="[180, 360, 540, 720, 900, 1080, 1296, 1512, 1728, 2048]"
+       data-aspectratio="{{ product.featured_image.aspect_ratio }}"
+       data-sizes="auto"
+       data-srcset="{{ image_first | img_url: '360x' }} 360w,
+                    {{ image_first | img_url: '540x' }} 540w,
+                    {{ image_first | img_url: '720x' }} 720w,
+                    {{ image_first | img_url: '900x' }} 900w"
+       data-image>
+  </picture>
+  <span class="images-two">
+    <picture data-index="1">
+      <source
+              data-srcset="{{ product.images[1].src | img_url: '300x' }}"
+              media="(max-width: 767px)" />
+      <source
+              data-srcset="{{ product.images[1].src | img_url: '360x' }} 360w,
+                            {{ product.images[1].src | img_url: '540x' }} 540w,
+                            {{ product.images[1].src | img_url: '720x' }} 720w,
+                            {{ product.images[1].src | img_url: '900x' }} 900w"
+              media="(min-width: 768px)" />
+
+      <img alt="{{ product.images[1].alt | escape }}"
+           class="lazyload"
+           data-widths="[180, 360, 540, 720, 900, 1080, 1296, 1512, 1728, 2048]"
+           data-aspectratio="{{ product.featured_image.aspect_ratio }}"
+           data-sizes="auto"
+           data-srcset="{{ product.images[1].src | img_url: '360x' }} 360w,
+                        {{ product.images[1].src | img_url: '540x' }} 540w,
+                        {{ product.images[1].src | img_url: '720x' }} 720w,
+                        {{ product.images[1].src | img_url: '900x' }} 900w"
+           data-image
+           >
+    </picture>
+  </span>
+{% else %}
+  <picture data-index="0">
+    <source
+            data-srcset="{{ image_first | img_url: '300x' }}"
+            media="(max-width: 767px)" />
+    <source
+            data-srcset="{{ image_first | img_url: '360x' }} 360w,
+                        {{ image_first | img_url: '540x' }} 540w,
+                        {{ image_first | img_url: '720x' }} 720w,
+                        {{ image_first | img_url: '900x' }} 900w"
+            media="(min-width: 768px)" />
+
+    <img alt="{{ product.featured_image.alt | escape }}"
+       class="lazyload"
+       data-widths="[180, 360, 540, 720, 900, 1080, 1296, 1512, 1728, 2048]"
+       data-aspectratio="{{ product.featured_image.aspect_ratio }}"
+       data-sizes="auto"
+       data-srcset="{{ image_first | img_url: '360x' }} 360w,
+                    {{ image_first | img_url: '540x' }} 540w,
+                    {{ image_first | img_url: '720x' }} 720w,
+                    {{ image_first | img_url: '900x' }} 900w"
+       data-image
+       >
+  </picture>
+{% endif %}

@@ -1,0 +1,115 @@
+<div class="header-mb {% if settings.header_style_mobile == 'header_mobile_2' %}header_mobile_2{% endif %}">          
+    <div class="header-mb-left header-mb-items">
+        <div class="hamburger-icon svg-mb">
+            <a href="#" class="icon-nav" title="Menu Mobile Icon" data-menu-mb-toogle>
+                <span class="icon-line"></span>
+            </a>
+        </div>
+        {% if settings.header_style_mobile == 'header_mobile_1' %}
+        	{% if settings.enable_search %}
+          <div class="search-mb svg-mb">
+              <a href="#" title="Search Icon" class="icon-search" data-search-mobile-toggle>
+                  {% render 'icon-search' %}
+              </a>
+
+              <a href="javascript:void(0)" title="close" class="close close-search">
+                  {% render 'icon-close' %}
+              </a>
+          
+              {% render 'search-bar' %}
+          </div>  
+        	{% endif %}
+        {% endif %}
+
+        {% if settings.header_style_mobile == 'header_mobile_2' %}
+          <div class="header-logo">
+            {% for block in section.blocks %}
+              {% if block.settings.brand_type == 'image' and block.settings.logo != bank %}
+              <a class="logo-img {% if forloop.first %}active{% endif %}" href="{% if pages[block.settings.link_text].url != blank %}{{ pages[block.settings.link_text].url }}{% else %}{{ routes.cart_url | split: 'cart' | first }}{% endif %}" title="Logo" data-load-page="{{ pages[block.settings.link_text].handle }}">
+                <img data-src="{{ block.settings.logo | img_url: 'master' }}"
+                     src="{{ block.settings.logo | img_url: 'master' }}"
+                     alt="{{ block.settings.logo.alt | default: shop.name }}" itemprop="logo" class="lazyautosizes lazyloade" data-sizes="auto">
+              </a>
+              {% elsif block.settings.brand_text != '' %}
+              <a class="logo-title {% if forloop.first %}active{% endif %}" href="{% if pages[block.settings.link_text].url != blank %}{{ pages[block.settings.link_text].url }}{% else %}{{ routes.cart_url | split: 'cart' | first }}{% endif %}" data-load-page="{{ pages[block.settings.link_text].handle }}">
+                {{ block.settings.brand_text }}
+              </a>
+              {% else %}
+              <a class="logo-title {% if forloop.first %}active{% endif %}" href="{% if pages[block.settings.link_text].url != blank %}{{ pages[block.settings.link_text].url }}{% else %}{{ routes.cart_url | split: 'cart' | first }}{% endif %}" data-load-page="{{ pages[block.settings.link_text].handle }}">
+                {{ shop.name }}
+              </a>
+              {% endif %}
+            {% endfor %}
+          </div>
+        {% endif %}
+    </div>
+
+  <div class="header-mb-middle header-mb-items">
+    {% if settings.header_style_mobile == 'header_mobile_1' %}
+      <div class="header-logo">
+        {% for block in section.blocks %}
+          {% if block.settings.brand_type == 'image' and block.settings.logo != bank %}
+          <a class="logo-img" href="{{ routes.cart_url | split: 'cart' | first }}" title="Logo">
+            <img data-src="{{ block.settings.logo | img_url: 'master' }}"
+                 src="{{ block.settings.logo | img_url: 'master' }}"
+                 alt="{{ block.settings.logo.alt | default: shop.name }}" itemprop="logo" class="lazyautosizes lazyloade" data-sizes="auto">
+          </a>
+          {% elsif block.settings.brand_text != '' %}
+          <a class="logo-title" href="{{ routes.cart_url | split: 'cart' | first }}">
+            {{ block.settings.brand_text }}
+          </a>
+          {% else %}
+          <a class="logo-title" href="{{ routes.cart_url | split: 'cart' | first }}">
+            {{ shop.name }}
+          </a>
+          {% endif %}
+        {% endfor %}
+      </div>
+    {% endif %}
+  </div>
+
+  <div class="header-mb-right header-mb-items">
+    {% if settings.header_style_mobile == 'header_mobile_2' %}
+      {% if settings.enable_search %}
+        <div class="search-mb svg-mb">
+            <a href="#" title="Search Icon" class="icon-search" data-search-mobile-toggle>
+                {% render 'icon-search' %}
+            </a>
+
+            <a href="javascript:void(0)" title="close" class="close close-search">
+                {% render 'icon-close' %}
+            </a>
+        
+            {% render 'search-bar' %}
+        </div>  
+      {% endif %}
+    {% endif %}
+    {% if shop.customer_accounts_enabled %}
+    <div class="acc-mb svg-mb">
+      <a href="#" title="User Icon" class="icon-user" data-user-mobile-toggle>
+        {% if settings.header_layout == '05' %}
+          {% render 'icons8-male-user' %}
+        {% elsif settings.header_layout == '06' %}
+          {% render 'icon-user-2' %}
+        {% else %}
+          {% render 'icon-user' %}
+        {% endif %}
+      </a>
+    </div>
+    {% endif %}
+    <div class="cart-icon svg-mb">
+      <a href="#" title="Cart Icon" data-cart-toggle>
+        {% if settings.header_layout == '05' %}
+          {% render 'icons8-shopping-bag' %}
+        {% elsif settings.header_layout == '06' %}
+          {% render 'icon-cart-2' %}
+        {% else %}
+          {% render 'icon-cart' %}
+        {% endif %}     
+        <span class="cartCount" data-cart-count>
+          {{ cart.item_count }}
+        </span>
+      </a>
+    </div>
+  </div>          
+</div>

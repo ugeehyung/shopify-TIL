@@ -1,0 +1,159 @@
+<section class="home-instagram instagram home-custom-instagram {{block.settings.layout_style}}" id="new-instagram-{{block.id}}">
+    <div class="{% if block.settings.layout_style == 'layout_style_3' %}container-fluid{% else %}container{% endif %}">
+        {% if block.settings.images_per_row == '5' %}
+        {% assign column_size = 5 %}
+        {% else %}
+        {% assign column_size = 12 | divided_by: block.settings.images_per_row %}
+        {% endif %}
+        {% assign class='' %}
+        {% if block.settings.layout_style == 'layout_style_3' %}
+        {% else %}
+        {% capture class%}col-6 col-md-4 col-lg-{{column_size}} hide{% endcapture %}
+        {% endif %}
+        
+        {% if block.settings.instagram_title != blank %}
+        <div class="widget-title{% if block.settings.title_style == 'style_2' %} not-before{% endif %}">   
+            <h3 class="box-title">
+                <span class="title"> 
+                {% if block.settings.layout_style == 'layout_style_1' %}
+                    <i class="fa fa-instagram fa-lg" aria-hidden="true"></i>
+                {% endif %}
+                {% render 'multilang' with block.settings.instagram_title %}
+                </span>
+            </h3>
+            {% if block.settings.instagram_des != blank %}
+                <p>
+                    {% render 'multilang' with block.settings.instagram_des %}
+                </p>        
+            {% endif %}
+        </div>
+        {% endif %}
+        {% if block.settings.type_instagram == 'app' %}
+        <div class="caption-instagram">
+          {{ block.settings.embed_code }}
+        </div>
+        {% else %}
+
+        <div id="instafeed" class="row instagram-grid" data-instagram-feed-custom data-limit="{{ block.settings.limit }}" data-rows="{{ block.settings.images_per_row }}">
+          {% assign number = block.settings.limit | plus: 0 %}
+          {% for i in (1..7) %}
+          {% capture enable %}enable_{{ i }}{% endcapture %}
+          {% capture image %}image_{{ i }}{% endcapture %}
+          {% capture url %}link_{{ i }}{% endcapture %}
+          {% if block.settings[enable] and block.settings[image] != blank %}
+          {%- assign img_url = block.settings[image] | img_url: '640x' -%}
+          {%- assign preview_img = block.settings[image] -%}
+          <div class="item item-grid {{ class }} span-{{forloop.index}}">
+            <a class="animate-hvr adaptive_height" {% if block.settings.type_instagram_by_gallery == 'link' %}href="{{ block.settings[link] }}"{% else %}class="fancybox" rel="gallery1" href="{{ block.settings[image] | img_url: 'master' }}" data-fancybox="images"{% endif %} style="padding-top: {{ 1 | divided_by: preview_img.aspect_ratio | times: 100 }}%">
+              <img {% render 'lazyload' %} data-srcset="{{ img_url }}" alt="{{ block.settings[image].alt | default: shop.name }}" />
+            </a>
+          </div>
+          {% endif %}
+
+          {% endfor %}
+        </div>
+        {% unless block.settings.layout_style == 'layout_style_3' %}
+        <div class="infinite-scrolling-instagram">
+          <a href="javascript:void(0)">
+            <svg id="icon-plus-instagram" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+                 viewBox="0 0 42 42" xml:space="preserve">
+              <polygon points="42,19 23,19 23,0 19,0 19,19 0,19 0,23 19,23 19,42 23,42 23,23 42,23 "/>
+            </svg>
+          </a>
+        </div>
+        {% endunless %}
+        
+        {% endif %}
+        
+    </div>
+</section>
+
+<style>
+
+    {% assign instagram_bg =  block.settings.instagram_bg %}
+
+    {% if block.settings.layout_style == 'layout_style_1' %}
+        #new-instagram-{{block.id}} {
+            padding-top: 40px;
+        }
+    {% endif %}
+
+     {% if block.settings.layout_style == 'layout_style_3' %}
+        #new-instagram-{{block.id}} {
+            border-top: 1px solid {{block.settings.instagram_bg_border}}
+        }
+    {% endif %}
+        
+    #new-instagram-{{block.id}},
+    #new-instagram-{{block.id}} .widget-title .box-title .title {
+        background-color: {{ instagram_bg }};
+    }
+    .home-custom-instagram .infinite-scrolling-instagram a svg{
+        fill: {{  block.settings.icon_plus_instagram }};
+    }
+
+    #new-instagram-{{block.id}} .widget-title .box-title {
+        color: {{ block.settings.color_title }};
+    }
+    #new-instagram-{{block.id}} .widget-title p {
+        color: {{ block.settings.color_des }};
+    }
+
+</style>
+{% unless block.settings.layout_style_3 %}
+<script>
+    $(document).ready(function() {
+      var column = 'col-6 col-md-4 col-lg-{{column_size}}';
+      var toshow = '{{ block.settings.limit }}';
+      var instagramBlock = $('[data-instagram-feed-custom]');
+
+        instagramBlock.each(function() {
+            
+            var self = $(this),
+                dataRows = self.data('rows'),
+                dataLimit = self.data('limit'),
+                item_instagram = self.find('.instagram-grid');
+            var i, y;
+
+
+
+            if ($(window).width() >= 1200) {
+                for (i = 1; i <= toshow; i++) {
+                    $('.item-grid:nth-child('+i+')').removeClass('hide');
+                }
+            } else if ($(window).width() >= 1024) {
+                for (i = 1; i <= 4; i++) {
+                    $('.item-grid:nth-child('+i+')').removeClass('hide');
+                }
+            } else if ($(window).width() >= 768) {
+                for (i = 1; i <= 3; i++) {
+                    $('.item-grid:nth-child('+i+')').removeClass('hide');
+                }
+            } else {
+                for (i = 1; i <= 4; i++) {
+                    $('.item-grid:nth-child('+i+')').removeClass('hide');
+                }
+            }
+
+            $(document).on('click', '.infinite-scrolling-instagram a', function() {
+                y = i;
+                if ($(window).width() > 1024)
+                    i = i + 4;
+                else
+                    i = i + 3;
+                for (y; y <= i; y++) {
+                    $('.item-grid:nth-child('+y+')').removeClass('hide');
+                }
+
+                if (!$('.item-grid.hide').length)
+                    $('.infinite-scrolling-instagram a').remove();
+            });
+
+            if (!$('.item-grid.hide').length){
+                $('.infinite-scrolling-instagram a').remove();
+            }
+
+        });
+    });
+</script>
+{% endunless %}
