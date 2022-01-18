@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<div class="header"></div>
+<nav> - </nav>
+<div class="content"></div>
+</html>
+
+<style>
+  .header {
+    height: 300px;
+    background-color: cornflowerblue;
+  }
+  nav {
+    background-color: #3A4145;
+    width: 100%;
+    text-align: center;
+  }
+  .fixed {
+    position: fixed;
+    bottom: 0;
+  }
+  content {
+    height: 1000px;
+  }
+</style>
+
+<script>
+    $(document).ready(function(){
+        $(window).scroll(function(){
+            if ($(this).scrollTop() > 300) {
+                $('nav').addClass('fixed');
+            }
+            else {
+                $('nav').removeClass('fixed');
+            }
+        });
+    });
+</script>
