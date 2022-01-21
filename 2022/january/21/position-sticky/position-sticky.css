@@ -1,0 +1,51 @@
+.container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+  border: 2px solid;
+}
+
+.inline-block {
+  display: inline-block;
+  padding: .6rem;
+}
+
+.nav {
+  flex: 1;
+  width: 100%;
+  height: 80px;
+  border: 2px solid;
+  margin-bottom: 5px;
+}
+
+.sidebar {
+  flex: 1;
+  height: auto;
+  min-width: 220px;
+}
+
+.long-text {
+  min-height: 200vh;
+  background: #eee;
+  flex: 1;
+}
+
+.static {
+  position: static;
+  background: orange;
+}
+
+.fixed {
+  position: fixed;
+  top: 99px;
+  left: 155px;
+  background: pink;
+}
+
+.sticky {
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
+  background: #8a4baf;
+}
